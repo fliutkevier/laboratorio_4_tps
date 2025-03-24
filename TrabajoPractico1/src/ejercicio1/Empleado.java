@@ -1,6 +1,15 @@
 package ejercicio1;
 
 public class Empleado {
+	
+	public Empleado() {
+		contid ++;
+		id = contid;
+		edad = 99;
+		nombre = "Sin nombre";	
+	}
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -23,4 +32,6 @@ public class Empleado {
 	private int id;
 	private String nombre;
 	private int edad;
+	
+	static int contid = 999;
 }
