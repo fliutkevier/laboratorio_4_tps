@@ -46,4 +46,8 @@ public class Empleado {
 	private int edad;
 	
 	static int contid = 999;
+
+	public String toString() {
+		return "Empleado: " + nombre + ", Edad: " + edad + ", Legajo:" + id;
+	}
 }
