@@ -9,6 +9,18 @@ public class Empleado {
 		nombre = "Sin nombre";	
 	}
 	
+	public Empleado(String nombre, int edad) {
+		   contid++;
+		   this.id = contid;
+		   this.nombre = nombre;
+		   this.edad = edad;
+	}
+
+	public static int devuelveProximoID(){
+		
+		   return contid+1;
+	}
+	
 	
 	public int getId() {
 		return id;
