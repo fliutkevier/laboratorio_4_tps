@@ -1,5 +1,6 @@
 package ejercicio1;
 
+	//constructores
 public class Empleado {
 	
 	public Empleado() {
@@ -21,7 +22,7 @@ public class Empleado {
 		   return contid+1;
 	}
 	
-	
+	//getters y setters
 	public int getId() {
 		return id;
 	}
@@ -41,12 +42,14 @@ public class Empleado {
 		this.edad = edad;
 	}
 	
+	//atributos	
 	private int id;
 	private String nombre;
 	private int edad;
 	
 	static int contid = 999;
-
+	
+	//toString
 	public String toString() {
 		return "Empleado: " + nombre + ", Edad: " + edad + ", Legajo:" + id;
 	}
