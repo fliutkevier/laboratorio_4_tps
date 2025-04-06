@@ -29,8 +29,14 @@ public class Profesor extends Empleado implements Comparable <Profesor> {
 
 	@Override
 	public int compareTo(Profesor o) {
-		// TODO Auto-generated method stub
+		if(o.antiguedadDocente == this.antiguedadDocente)
 		return 0;
+		
+		if(o.antiguedadDocente>this.antiguedadDocente)
+		{
+			return -1;
+		}
+		return 1;
 	}
 	
 
