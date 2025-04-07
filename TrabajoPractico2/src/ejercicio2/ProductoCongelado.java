@@ -1,7 +1,7 @@
 package ejercicio2;
 
 public class ProductoCongelado extends Producto{
-	
+
 	// Atributos ------------------
 	private String TempCongelacionReco;
 	
@@ -23,5 +23,10 @@ public class ProductoCongelado extends Producto{
 
 	public void setTempCongelacionReco(String tempCongelacionReco) {
 		TempCongelacionReco = tempCongelacionReco;
+	}
+	
+	//toString()
+	public String toString() {
+		return "Producto congelado, temperatura de congelación recomendada: " + TempCongelacionReco + ". " + super.toString();
 	}
 }

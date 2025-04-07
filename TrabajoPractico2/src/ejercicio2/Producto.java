@@ -1,11 +1,11 @@
 package ejercicio2;
 
 public class Producto {
-
+	
 	// Atributos ------------------
 	private String Fecha_Caducidad;
 	private int Nro_Lote;
-
+	
 	// Constructores ------------------
 	public Producto() {
 		this.Fecha_Caducidad = "0-0-0";
@@ -18,7 +18,7 @@ public class Producto {
 		this.Nro_Lote = Nro_lote;
 		
 	}
-
+	
 	// Getters y setters ------------------
 	public String getFecha_Caducidad() {
 		return Fecha_Caducidad;
@@ -38,7 +38,7 @@ public class Producto {
 
 	@Override
 	public String toString() {
-		return "Posee un fecha de caducidad: " + Fecha_Caducidad + " y su numero de lote es"  + Nro_Lote;
+		return "Fecha de caducidad: " + Fecha_Caducidad + ", numero de lote: "  + Nro_Lote;
 	}
 	
 }
