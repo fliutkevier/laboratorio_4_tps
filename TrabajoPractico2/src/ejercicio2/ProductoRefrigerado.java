@@ -12,5 +12,9 @@ public class ProductoRefrigerado extends Producto{
 	}
 	
 	// Getters y setters -------------
+	
+	public String toString() {
+		return "Producto refrigerado, código del organismo de supervisión alimentaria: " + codOrgSupervisor + ". " + super.toString();
+	}
 
 }
