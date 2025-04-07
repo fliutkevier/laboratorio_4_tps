@@ -1,10 +1,12 @@
 package ejercicio2;
 
 public class Producto {
-	
+
+	// Atributos ------------------
 	private String Fecha_Caducidad;
 	private int Nro_Lote;
-	
+
+	// Constructores ------------------
 	public Producto() {
 		this.Fecha_Caducidad = "0-0-0";
 		this.Nro_Lote = 00000;
@@ -17,6 +19,7 @@ public class Producto {
 		
 	}
 
+	// Getters y setters ------------------
 	public String getFecha_Caducidad() {
 		return Fecha_Caducidad;
 	}
