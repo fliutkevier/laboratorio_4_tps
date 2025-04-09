@@ -7,6 +7,13 @@ public class ProductoFresco extends Producto{
 	private String Pais_Origen;
 	
 	// Constructores ------------------
+	
+	public ProductoFresco() {
+		super();
+		this.Fecha_Envasado = "0-0-0";
+		this.Pais_Origen = "Sin especificar";
+	}
+	
 	public ProductoFresco(String Fecha, int Nro_lote, String Fecha_Envasado, String Pais_Origen) {
 		super(Fecha, Nro_lote);
 		this.Pais_Origen = Pais_Origen;
