@@ -30,6 +30,5 @@ public class ProductoRefrigerado extends Producto{
 		return "Producto refrigerado, código del organismo de supervisión alimentaria: " + codOrgSupervisor + ". " + super.toString();
 	}
 
-	
 
 }
