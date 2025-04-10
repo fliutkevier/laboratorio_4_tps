@@ -1,18 +1,13 @@
 package ejercicio3;
 
 public class Polideportivo implements IInstalacionDeportiva, IEdificio{
-	
+
+	// Atributos -----------------------
 	private String Nombre;
 	private double Superficie;
 	private int tipoInstalacion;
-	
-	public String getNombre() {
-		return Nombre;
-	}		
-	public double getSuperficie() {
-		return Superficie;
-	}
-	
+
+	// Constructores -----------------------
 	public Polideportivo() {
 		Nombre = "Sin nombre";
 		Superficie = 0;
@@ -23,9 +18,27 @@ public class Polideportivo implements IInstalacionDeportiva, IEdificio{
 		Superficie = superficie;
 	}
 	
+	// Gets -----------------------
+	public String getNombre() {
+		return Nombre;
+	}		
+	public double getSuperficie() {
+		return Superficie;
+	}
+	
 	@Override
 	public int getTipoDeInstalacion() {
 		return tipoInstalacion;
 	}
-		
+
+	@Override
+	public double getSuperficieEdificio() {
+		return Superficie;
+	}
+	
+	// To string -----------------------
+	@Override
+	public String toString() {
+		return "Polideportivo " + Nombre + ", con superficie de" + Superficie + " mts2. Instalacion de tipo " + tipoInstalacion;
+	}
 }
