@@ -1,6 +1,6 @@
 package ejercicio3;
 
-public class EdificiosDeOficinas {
+public class EdificiosDeOficinas implements IEdificio {
 	private int NumeroOficinas;
 	
 	//constructores

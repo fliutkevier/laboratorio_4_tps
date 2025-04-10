@@ -1,6 +1,6 @@
 package ejercicio3;
 
-public class Polideportivo implements IInstalacionDeportiva{
+public class Polideportivo implements IInstalacionDeportiva, IEdificio{
 	
 	private String Nombre;
 	private double Superficie;
