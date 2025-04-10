@@ -1,11 +1,12 @@
 package ejercicio3;
 
 public class EdificiosDeOficinas implements IEdificio {
+
+	// Atributos -----------------------	
 	private int NumeroOficinas;
 	private double Superficie;
 	
-	//constructores
-	
+	// Constructores -----------------------
 	public EdificiosDeOficinas()
 	{
 		NumeroOficinas = 0;
@@ -18,6 +19,7 @@ public class EdificiosDeOficinas implements IEdificio {
 		this.Superficie = superficie;
 	}
 
+	// Gets n setters -----------------------
 	public int getNumeroOficinas() {
 		return NumeroOficinas;
 	}
@@ -30,5 +32,7 @@ public class EdificiosDeOficinas implements IEdificio {
 	{
 		return Superficie;
 	}
+
+	// To string -----------------------
 
 }
