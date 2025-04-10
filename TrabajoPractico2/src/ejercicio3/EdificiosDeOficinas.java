@@ -34,5 +34,10 @@ public class EdificiosDeOficinas implements IEdificio {
 	}
 
 	// To string -----------------------
-
+	
+	@Override
+	public String toString() {
+		return "Numero de oficinas = " + NumeroOficinas + ", Superficie = " + Superficie + " mts2.";
+	}
+    
 }
