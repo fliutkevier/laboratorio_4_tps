@@ -5,8 +5,13 @@ public class Persona {
 	private String _Apellido;
 	private String _dni;
 	
-	public static boolean verificarDniInvalido() throws DniInvalido
+	public static boolean verificarDniInvalido(String dni) throws DniInvalido
 	{
-		//retorna verdadero en caso de que no contenga letras, sino hace throw.
+		for (int i = 0; i < dni.length(); i++) {
+	        if (!Character.isDigit(dni.charAt(i))) {
+	            throw new DniInvalido();
+	        }
+	    }
+	    return true;
 	}
 }
