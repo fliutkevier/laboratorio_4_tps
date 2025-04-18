@@ -14,4 +14,11 @@ public class Persona {
 	    }
 	    return true;
 	}
+
+	@Override
+	public String toString() {
+		return _nombre + ", " + _Apellido + ", " + _dni;
+	}
+	
+	
 }
