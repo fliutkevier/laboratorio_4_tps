@@ -56,8 +56,21 @@ public class Archivo {
 		
 		return lineas;
 	}
+
+	public void escribe(String persona, String ruta) {
+		try
+		{
+			FileWriter entrada = new FileWriter(ruta, true);
+			BufferedWriter miBuffer = new BufferedWriter(entrada);
+			miBuffer.write(persona + "\n");
+			miBuffer.close();
+			entrada.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	public void leer_archivo(List<Persona> lista) {
+	/*public void leer_archivo(List<Persona> lista) {
 		try {
 			BufferedReader lector = new BufferedReader(new FileReader(ruta));
 			String linea = "";
@@ -75,6 +88,6 @@ public class Archivo {
 		catch(IOException e) {
 			System.out.println("Error al leer archivo");
 		}
-	}
+	}*/
 }
 
