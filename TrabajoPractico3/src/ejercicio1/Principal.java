@@ -30,8 +30,12 @@ public class Principal {
 			}
 		}
 		
+		Archivo archivoResultado = new Archivo("Resultado.txt");
+		
 		for (Persona persona : personas) {
+			archivoResultado.escribe(persona.toString() ,"Resultado.txt");
 			System.out.println(persona.toString());
 		}
+		System.out.println("Resultado creado exitosamente");
 	}
 }
