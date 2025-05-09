@@ -1,11 +1,12 @@
 package ejercicio1;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -56,7 +57,7 @@ public class Archivo {
 		
 		return lineas;
 	}
-
+	
 	public void escribe(String persona, String ruta) {
 		try
 		{

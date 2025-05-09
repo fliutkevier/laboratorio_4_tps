@@ -1,8 +1,5 @@
 package ejercicio1;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 public class Persona implements Comparable<Persona>{
 	private String _nombre;
 	private String _apellido;
