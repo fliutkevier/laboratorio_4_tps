@@ -17,6 +17,7 @@ public class Principal extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private PanelAgregarPelicula panelAgregarPelicula;
+	private PanelListarPeliculas panelListarPelicula;
 	
 	private static DefaultListModel<Peliculas> dlmPeliculas;
 	
@@ -37,7 +38,7 @@ public class Principal extends JFrame{
 	public Principal() {
 		setTitle("Programa");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 500, 400);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -76,10 +77,16 @@ public class Principal extends JFrame{
 		
 		mntmListar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//listado de peliculas en consola
-				/*for (int i = 0; i < dlmPeliculas.size(); i++) {
-					System.out.println("Indice " + i + " " + dlmPeliculas.getElementAt(i).toString());
-				}*/
+				contentPane.removeAll();
+				panelListarPelicula = new PanelListarPeliculas();
+				panelListarPelicula.setDefaultListModel(dlmPeliculas);
+				panelListarPelicula.ordenarAlfabeticamente();
+				panelListarPelicula.setBounds(10, 10, 400, 200); 
+				panelListarPelicula.setVisible(true); 
+				contentPane.add(panelListarPelicula);
+				contentPane.repaint();
+				contentPane.revalidate();
+				
 			}
 			
 		});
