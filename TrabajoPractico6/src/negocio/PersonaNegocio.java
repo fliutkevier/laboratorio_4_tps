@@ -1,11 +1,12 @@
-package dao;
+package negocio;
+
 import java.util.ArrayList;
 
 import entidad.Persona;
 
-public interface PersonaDao {
+public interface PersonaNegocio {
 	public boolean Agregar(Persona persona);
 	public boolean Modificar(Persona persona);
-	public boolean Eliminar(String dni);
+    public boolean Eliminar(String dni);
 	public ArrayList<Persona> Listar();
 }
