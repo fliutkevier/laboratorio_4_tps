@@ -58,6 +58,10 @@ public class servletsClientes extends HttpServlet {
         	cargarPrestamosActuales(request, response);
         }
         
+        if (request.getParameter("btnVerHistorial") != null) {
+            mostrarHistorial(request, response);
+        }
+        
 	}
 	
 	private void cargarSeleccionCuenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
