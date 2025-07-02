@@ -31,14 +31,18 @@
 	<h2 class="mb-4 mt-4 text-center"> Gestión de Usuarios</h2>
 	
 <%
-						if(request.getAttribute("confirmacion") != null) {
-							 int confirmacion = (int)request.getAttribute("confirmacion");
-							%>
-							<div class="alert alert-success mt-3" role="alert">
-            <i class="bi bi-check-circle-fill"></i> ¡Contraseña actualizada correctamente!
-        </div><%
-}
-%>
+		if(request.getAttribute("confirmacion") != null) {
+		int confirmacion = (int)request.getAttribute("confirmacion");
+		%> <% if (confirmacion == 1) { %>
+			<div class="alert alert-success mt-3" role="alert">
+			<i class="bi bi-check-circle-fill"></i> ¡Contraseña actualizada correctamente!
+			</div>
+		<% } else { %>
+			<div class="alert alert-danger mt-3" role="alert">
+			<i class="bi bi-check-circle-fill"></i> ERROR: No se pudo actualizar la contraseña.
+			</div>
+		<% }
+		} %>
 
 <div class="row mt-4">
 		
@@ -170,6 +174,9 @@
                         <div class="mb-3">
                             <label class="form-label">Ingrese la nueva contraseña</label>
                             <input type="password" class="form-control" name="nuevaContrasena" required>
+                            <br>
+                            <label class="form-label">Confirme la nueva contraseña</label>
+                            <input type="password" class="form-control" name="confNuevaContrasena" required>
                         </div>
 						            <input type="button" class="btn btn-secondary" value="Guardar cambio" 
                    data-bs-toggle="modal" data-bs-target="#confirmarCambioModal">

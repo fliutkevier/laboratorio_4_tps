@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -371,7 +372,7 @@ public class servletAdminClientes extends HttpServlet {
     	request.setAttribute("prestamosAtrasados", informe.getPrestamosAtrasados());
     	request.setAttribute("prestamosSaldados", informe.getPrestamosSaldados());
     	request.setAttribute("cumplibilidad", informe.getCumplibilidadPrestamos());
-    	request.setAttribute("saldoPromedio", informe.getSaldoPromedioPorCuenta());
+    	request.setAttribute("saldoPromedio", informe.getSaldoPromedioPorCuenta().setScale(2, RoundingMode.HALF_UP));
     	request.setAttribute("saldoBanco", informe.getSaldoTotalBanco());
     	request.setAttribute("transferencias", informe.getTransferenciasRealizadas());
     	request.setAttribute("movimientos", informe.getMovimientosTotales());
@@ -601,13 +602,17 @@ public class servletAdminClientes extends HttpServlet {
     private void cambiarContrasena(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
     {
     	int confirmar = 0;
-    	String nueva = request.getParameter("nuevaContrasena");  
-    	 if (nueva != null && !nueva.isEmpty()) {    		 
-    		 confirmar = negUsuario.cambiarContrasena(usuarioA.getIdUsuario(), nueva);
+    	String nueva = request.getParameter("nuevaContrasena");
+    	String confirmarNueva = request.getParameter("confNuevaContrasena");
+    	
+    	 if (nueva != null && !nueva.isEmpty() && confirmarNueva != null && !confirmarNueva.isEmpty()) {
+    		 if (nueva.equals(confirmarNueva)) {
+    			 confirmar = negUsuario.cambiarContrasena(usuarioA.getIdUsuario(), nueva);
+    	     } else { confirmar = 0; }
     	 }
-    	 if(confirmar == 1) {
-    		 request.setAttribute("confirmacion", confirmar); 
-    	 }
+    	 
+    	 request.setAttribute("confirmacion", confirmar);
+    	 
     	  request.setAttribute("Ufiltrado", usuarioA);
     	  ArrayList<Usuario> lista = negUsuario.Listar(); 
     	  request.setAttribute("listaU", lista); 

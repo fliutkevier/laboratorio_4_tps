@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import Negocio.*;
 import NegocioInterfaz.INegocioCuentaBancaria;
+import NegocioInterfaz.INegocioCuotas;
 import Entidades.*;
 import NegocioInterfaz.INegocioMovimientos;
 import Negocio.NegocioMovimiento;
@@ -24,10 +25,11 @@ import NegocioInterfaz.INegocioPrestamo;
 public class servletsClientes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        Cliente cliente = new Cliente();
-       CuentaBancaria cuenta;
+       CuentaBancaria cuenta;       
        INegocioCuentaBancaria negcuentaBancaria = new NegocioCuentaBancaria();
        INegocioMovimientos movimiento = new NegocioMovimiento();
        INegocioPrestamo negPrestamo = new NegocioPrestamo();
+       INegocioCuotas negCuotas = new NegocioCuotas();
   
    
     public servletsClientes() {
@@ -51,16 +53,34 @@ public class servletsClientes extends HttpServlet {
         }
         
         if (request.getParameter("btnSolicitarPrestamo") != null)  {
-        	solicitarPrestamo(request, response);
+        	agregarPrestamo(request, response);
         }
         
-        if (request.getParameter("btnseleccionPrestamo") != null)  {
+        if (request.getParameter("btnCargarPrestamos") != null)  {
         	cargarPrestamosActuales(request, response);
         }
         
         if (request.getParameter("btnVerHistorial") != null) {
             mostrarHistorial(request, response);
         }
+        if (request.getParameter("btnGeneraCuotas") != null) {
+            cargarCuotas(request, response);
+        }
+        
+        if (request.getParameter("btnPagarCuota") != null) {
+            pagarPrestamo(request, response);
+        }
+        
+        if (request.getParameter("btnHistorialFiltrado") != null) {
+    	    String tipoMovimiento = request.getParameter("tipoMovimiento");
+
+    	    if (tipoMovimiento == null || tipoMovimiento.isEmpty()) {
+    	        mostrarHistorial(request, response);
+    	    } else {
+    	        mostrarHistorialFiltrado(request, response, tipoMovimiento); 
+    	    }
+    	}
+        
         
 	}
 	
@@ -84,19 +104,27 @@ public class servletsClientes extends HttpServlet {
     }
 	
 	
-	private void mostrarHistorial(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		 HttpSession session = request.getSession(false);
-		    if (session == null || session.getAttribute("cuentaElegida") == null) {
-		        response.sendRedirect("iniciocliente.jsp");
-		        return;
-		    }
-		    CuentaBancaria cuentaElegida = (CuentaBancaria) session.getAttribute("cuentaElegida");
-		    int nroCuenta = cuentaElegida.getNroCuenta();
-		    ArrayList<Movimiento> movimientos = movimiento.obtenerMovimientosPorCuenta(nroCuenta);
+		private void mostrarHistorial(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		    request.setAttribute("listaMovimientos", movimientos);
-		    request.getRequestDispatcher("ClienteHistorial.jsp").forward(request, response);
-    }
+        CuentaBancaria cuentaElegida = (CuentaBancaria) request.getSession().getAttribute("cuentaElegida");
+
+        int nroCuenta = cuentaElegida.getNroCuenta();
+        ArrayList<Movimiento> movimientos = movimiento.obtenerMovimientosPorCuenta(nroCuenta);
+        request.setAttribute("listaMovimientos", movimientos);
+        request.getRequestDispatcher("ClienteHistorial.jsp").forward(request, response);
+		}
+
+		private void mostrarHistorialFiltrado(HttpServletRequest request, HttpServletResponse response, String tipoMovimiento) throws ServletException, IOException {
+         CuentaBancaria cuentaElegida = (CuentaBancaria) request.getSession().getAttribute("cuentaElegida");
+        int nroCuenta = cuentaElegida.getNroCuenta();
+        ArrayList<Movimiento> movimientosFiltrados = movimiento.obtenerMovimientosPorTipo(nroCuenta, tipoMovimiento);
+
+
+        request.setAttribute("listaMovimientos", movimientosFiltrados);
+        request.setAttribute("tipoMovimientoSeleccionado", tipoMovimiento);
+        request.getRequestDispatcher("ClienteHistorial.jsp").forward(request, response);
+		}
+	
 	
 	private void calcularCuota(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
@@ -113,14 +141,7 @@ public class servletsClientes extends HttpServlet {
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 	}
 	
-	private void solicitarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{	
-
-		agregarPrestamo(request, response);
-		sumarPrestamoAaCuenta(request, response);
-		pagarPrestamo(request, response);
-		
-	}
+	
 	
 	private void sumarPrestamoAaCuenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{	
@@ -135,10 +156,7 @@ public class servletsClientes extends HttpServlet {
 		
 	}
 	
-	private void pagarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		
-	}
+	
 	
 	private void agregarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	
@@ -172,8 +190,17 @@ public class servletsClientes extends HttpServlet {
 		prestamo.setImportePagar(BDimporteAaPagar);
 		
 		int confirmar = negPrestamo.agregarNuevoPrestamo(prestamo);
+		crearCuotas(prestamo);
 		request.setAttribute("prestamoAgregado", confirmar);
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
+	}
+	private void crearCuotas(Prestamo prestamo)
+	{	
+		int Codprestamo = prestamo.getCodPrestamo();
+		int cuotas = prestamo.getCuotasTotales();
+		int montoCuota = prestamo.getPagoMensual().intValue();
+		for (int i = 0; i<cuotas ; i++)			
+			negCuotas.CrearCuotasdePrestamo (Codprestamo, (i+1), montoCuota);
 	}
 	private void cargarPrestamosActuales(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
@@ -190,10 +217,46 @@ public class servletsClientes extends HttpServlet {
 			if(prestamo.getCuentaAsociada().getNroCuenta()==idCuentaActual && prestamo.isDeuda())
 				prestamosCuenta.add(prestamo);
 		}
-		request.setAttribute("prestamosActuales", prestamosCuenta);
+		session.setAttribute("prestamosActuales", prestamosCuenta);
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 		
 	}
+	
+	private void cargarCuotas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
+		 String prestamoId = request.getParameter("seleccionPrestamo");
+		    String cuentaId = request.getParameter("seleccionCuentaPago");
+
+		    if (prestamoId != null && cuentaId != null) {
+	            int cuentaPago = Integer.parseInt(cuentaId);
+	            int prestamoAaPagar = Integer.parseInt(prestamoId);
+	            CuentaBancaria cuentaAaCobrar = negcuentaBancaria.ObtenerporID(cuentaPago);		            
+	            double saldoAntesdeDescontar = cuentaAaCobrar.getSaldo().doubleValue();
+			HttpSession session = request.getSession();
+			session.setAttribute("IdprestamoSeleccionado", prestamoId);
+	        session.setAttribute("cuentaPagoCuota", cuentaAaCobrar);
+						
+			ArrayList <Cuotas> cuotas = new ArrayList<Cuotas>();
+			cuotas = negCuotas.listarCuotasPorIdPrestamo(prestamoAaPagar);	
+			
+			session.setAttribute("saldoAntesdeDescontar", saldoAntesdeDescontar);
+			session.setAttribute("listadoCuotas", cuotas);
+			
+		}
+		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
+		
+	}
+	///TERMINAR
+	
+		private void pagarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+		{
+			//generar movimiento - solo pagar estado = 0 - marcar cuota como 1 - restar saldo en cuenta
+			int cuotaElegida = Integer.parseInt(request.getParameter("seleccionCuota"));
+			
+			HttpSession session = request.getSession();
+			CuentaBancaria cuenta = (CuentaBancaria)session.getAttribute("cuentaPagoCuota");
+			//negcuentaBancaria.actualizarSaldo()
+		}
 }
 
 

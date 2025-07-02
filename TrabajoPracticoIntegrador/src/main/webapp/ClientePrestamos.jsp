@@ -3,6 +3,8 @@
     pageEncoding="UTF-8"%>
     <%@ page import="java.util.*"%>
     <%@ page import="Entidades.*"%>
+    <%@ page import="java.text.SimpleDateFormat"%>
+    <%@ page import= "java.math.BigDecimal"%>;
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,12 +19,15 @@
 	<main class="container mt-3">
 	
 	<% 	ArrayList<CuentaBancaria> cuentas;
-	double cuota= 0;%>
-	<h1 class="mb-3 text-center">Sección Prestamos</h1>
-
+	double saldoact= 0;
+	BigDecimal saldoenCuentaActualizada;
+	double valorCuota =0;
+	double cuota =0;%>
+	
+	<h3 class="mb-3 text-center">Sección Prestamos</h3>
 		
 		<div class="row">
-		<div class="col-md-8">		
+		<div class="col-md-6">		
 		
 		 <div class="card card-body bg-light">
 		 <form method="post" action="servletsClientes">
@@ -88,37 +93,37 @@
 		</form></div>
 		</div>	
 		
-		<div class="col-md-4">
-		<form method="post" action="servletsClientes ">
+		<div class="col-md-6">
 		
-			  <button class="btn btn-outline-success w-100 py-4" type="button" data-bs-toggle="collapse" data-bs-target="#seccionEdicion" name="btnEditarContraseña">
-                <i class="bi bi-pencil-square me-2 "></i>Pagar cuotas de tu prestamo existente
-            </button>            
-           
-            <div class="collapse mt-3" id="seccionEdicion">
-                <div class="card card-body bg-light">
-                <input type="submit" name="btnseleccionPrestamo" class="btn btn-primary py-0 w-100 mb-4 mt-3" value="Actualizar">
+		 <div class="card card-body bg-light">
+		 <form method="post" action="servletsClientes ">
+                <input type="submit" name="btnCargarPrestamos" class="btn btn-outline-secondary w-100 py-2" value="Pagar cuotas de tu prestamo existente">
                 
-                    <h5 class="fw-semibold fst-italic mb-3">Seleccionar prestamo </h5>
+                <%HttpSession sesion = request.getSession();
+                if(sesion.getAttribute("prestamosActuales")!= null){ %> 
+                    <h6 class="fw-semibold fst-italic mb-3 mt-4">Seleccionar prestamo a pagar</h6>
                     
 				<select name="seleccionPrestamo" class="form-select">
-			    <% 
-			        ArrayList<Prestamo> prestamos = (ArrayList<Prestamo>) request.getAttribute("prestamosActuales");
+			    <%   
+			        ArrayList<Prestamo> prestamos = (ArrayList<Prestamo>) sesion.getAttribute("prestamosActuales");
 			        //String cuentaSeleccionada = request.getParameter("numeroCuenta");
 			        
 			        if(prestamos != null && !prestamos.isEmpty()) {
 			            for(Prestamo pres : prestamos) { 
-			            	String descripcion = String.valueOf(pres.getImporteSolicitado());
-			            	String descripcion2 = String.valueOf(pres.getFechaSolicitado());
+			            	String importe = "Monto de $ " + String.valueOf(pres.getImporteSolicitado()) + " || Solicitado el ";
+			            	String mostrarvalorCuota = " || Cuotas de $ " + String.valueOf(pres.getPagoMensual());
 			            	String valorOption = String.valueOf(pres.getCodPrestamo());
+			            	String fechaPedido = new SimpleDateFormat("dd-MM-yyyy").format(pres.getFechaSolicitado());
 			                %>
 			                <option value="<%= valorOption %>"
-		                    <%= (pres != null && pres.equals(valorOption)) ? "selected" : "" %>>
-		                    <%= descripcion + descripcion2 %>
-                </option>
-			    <% 
-			            }
-			        } else {
+			                <%= (session.getAttribute("IdprestamoSeleccionado") != null && 
+							         session.getAttribute("IdprestamoSeleccionado").equals(valorOption)) ? "selected" : "" %>>
+		                    
+							   <%= importe + fechaPedido + mostrarvalorCuota %>
+							</option>
+                
+                
+			    <% 	}	} else {
 			    %>
 			            <option disabled selected>No hay prestamos vigentes</option>
 			    <% 
@@ -126,34 +131,115 @@
 			    %>
 			</select>
 			
-			<input type="button" class="btn btn-secondary " value="Seleccionar" name="btnPagoPrestamo"
-                   data-bs-toggle="modal" data-bs-target="#confirmarCambioModal">
+			
+			<h6 class="fw-semibold fst-italic mb-3 mt-4">Seleccionar cuenta con la que desea abonar</h6>
+                    
+				<select name="seleccionCuentaPago" class="form-select">
+			    <% 
+			    ArrayList<CuentaBancaria> cuentaPago=null;
+				sesion = request.getSession();
+			    if(sesion.getAttribute("cuentasBancarias") != null)
+			        cuentaPago = (ArrayList<CuentaBancaria>) session.getAttribute("cuentasBancarias");
+				if(cuentaPago != null && !cuentaPago.isEmpty()) {
+			            for(CuentaBancaria itemCuenta : cuentaPago) { 
+			            	String valorOption = String.valueOf(itemCuenta.getNroCuenta());
+			            	String datosCuenta = String.valueOf(cuenta.getTipoCuenta().getDescripcion()) + " - CBU " + String.valueOf(cuenta.getCBU()) + "  || Saldo actual: $ " + cuenta.getSaldo();
+			            	
+			                %>
+			                <option value="<%= valorOption %>">
+                    		<%= datosCuenta %>
+                </option>
+                
+                
+			    <% 
+			            }
+			        } else {
+			    %>
+			            <option disabled selected>No hay cuentas vigentes</option>
+			    <% 
+			        } 
+			    %>
+			</select>			
+                  <input type="submit" class="btn btn-secondary mt-4 w-100 py-1" value="Confirmar y continuar a pagar" name="btnGeneraCuotas">
+			
+                   <% }%>
+                   
+                   </form>
+			<form method="post" action="servletsClientes ">
+                   <%if(session.getAttribute("listadoCuotas")!= null ) { %> 
+            	<h6 class="fw-semibold fst-italic mb-3 mt-4">Seleccionar una cuota de la lista</h6>
+                    
+				<select name="seleccionCuota" class="form-select">
+			    <% 
+			   
+			    ArrayList<Cuotas> listaCuotas = null;		
+			    if(session.getAttribute("listadoCuotas") != null)
+			    	listaCuotas = (ArrayList<Cuotas>) session.getAttribute("listadoCuotas");
+			   
+			    
+				if(listaCuotas != null && !listaCuotas.isEmpty()) {
+			            for(Cuotas itemCuota : listaCuotas) { 
+			            	String valorOption = String.valueOf(itemCuota.getCodigoCuota());
+			            	String datosCuenta = "Cuota Nro " + String.valueOf(itemCuota.getNumeroCuota()) +  " - Valor $ " + String.valueOf(itemCuota.getMontoCuota()) + 
+			                        (itemCuota.isEstado() ? " - Pagada" : " - A pagar");
+			            	valorCuota = itemCuota.getMontoCuota();
+			                %>
+			                <option value="<%= valorOption %>">
+                    		<%= datosCuenta %>
+                </option>                
+                
+			    <% 
+			            }
+			        } else {
+			    %>
+			            <option disabled selected>No hay cuotas pendientes de pago</option>			            
+			    <% 
+			        } 
+				if(session.getAttribute("saldoAntesdeDescontar") != null)
+				{
+					saldoact = (double) (session.getAttribute("saldoAntesdeDescontar"));
+				}	
+				
+			    %>
+			</select>		
+			    <input type="text" class="form-control mb-2 mt-2" id="cuotas" value="Nuevo saldo en cuenta: $ <%= saldoact - valorCuota %> " readonly>
+				
+			
+                   
+		<button type="button"  class="btn btn-secondary mt-4 w-100 py-1" data-bs-toggle="modal" data-bs-target="#confirmarPagoModal"> Pagar Cuota</button>                 
+                   
+                   <div class="modal fade" id="confirmarPagoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">¿Confirmar pago?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de querer pagar esta cuota?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                
+                <input type="submit" class="btn btn-primary" value="Si, confirmar Pago" name="btnPagarCuota">
+                
+            </div>
+        </div>
+    </div>
+</div>
+                   <%} %>
+                   
+                   </form>
                </div>
-    		</div>
+                   
+               
+    		
    
-    <div class="modal fade" id="confirmarCambioModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">¿Estás seguro?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
-                    Esta acción no se puede deshacer.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                 
-                    <input type="submit" class="btn btn-warning" name="btnCambioContra" value="Sí, actualizar">
-						</div>
-            </div>		
-       	 </div>
+   
+		
 		</div>
-		</form>
 	</div>
 	
-		</div>
+	
 			
 	</main>
 	

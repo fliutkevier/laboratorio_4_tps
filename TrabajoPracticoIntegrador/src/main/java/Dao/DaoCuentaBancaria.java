@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import DaoInterfaz.IDaoCuentaBancaria;
@@ -220,22 +221,39 @@ public class DaoCuentaBancaria implements IDaoCuentaBancaria{
 	@Override
 	public boolean asignarCuenta(int codigoCliente, char tipoDeCuenta, String cbu) {
 		Connection cn = null;
+		int nroCuentaGenerado = 0;
 		int filas=0;
 
         try {
         	
             cn = Conexion.getConexion().getSQLConexion();
             String query = "INSERT INTO cuentas(CodTipoCuenta, CodCliente, CBU) VALUES (?, ?, ?)";
-            PreparedStatement pst = cn.prepareStatement(query);
+            PreparedStatement pst = cn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                     
             	pst.setString(1, String.valueOf(tipoDeCuenta));
             	pst.setInt(2, codigoCliente);
             	pst.setString(3, cbu);
-            	filas = pst.executeUpdate();
-    	        cn.commit();
-            	          
+    	        pst.executeUpdate();
+            	
+    	    ResultSet rs = pst.getGeneratedKeys();
+    	        if (rs.next()) {
+    	            nroCuentaGenerado = rs.getInt(1);
+    	        }
+    	    
+            String query2 = "INSERT INTO movimientos(CodTipoMovimiento, NroCuentaAsociado, Detalle, Importe) VALUES ('AC', ?, 'Alta de cuenta', 10000);";
+            PreparedStatement pst2 = cn.prepareStatement(query2);
+            
+                pst2.setInt(1, nroCuentaGenerado);
+                
+        	    filas = pst2.executeUpdate();
+        	    cn.commit();
 
         } catch (Exception e) {
+        	try {
+				cn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
             e.printStackTrace();
         } finally {
             try {

@@ -6,6 +6,21 @@
 <meta charset="UTF-8">
 <title>AdminInformes</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css"
+		  href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+	<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf8"
+			src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#table_id').DataTable({
+				"pageLength": 5, // Muestra 5 registros por página
+				"lengthMenu": [5, 10, 25, 50], // Opciones para cambiar cantidad de registros
+			});
+		});
+	</script>
 </head>
 <body>
 <jsp:include page="AdminNavBar.jsp"></jsp:include>
@@ -81,7 +96,7 @@
 						if (clientes != null && !clientes.isEmpty()) {	%>
 					<div class="col">
 						<p class="fw-semibold text-primary-emphasis">Clientes nuevos asociados: <%= clientes.size() %></p>
-						<table class="table mt-3 text-center">
+						<table class="table table-bordered table-hover" id="table_id">
 							<thead class="table-light">
 							<tr>
 								<th>Código cliente</th>
@@ -112,35 +127,39 @@
 					</div>
 
 
-					<div class="row justify-content-center mt-3">
-						<div class="col-md-12">
-							<hr class="my-4">
+					<div class="row justify-content-center mt-3 ms-4">
+						<div class="col">
+							<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+								<div class="card-header"> <h5>Préstamos</h5></div>
+								<div class="card-body">
+									<p class="card-text">Activos: ${prestamosActivos}</p>
+									<p class="card-text">Atrasados: ${prestamosAtrasados}</p>
+									<p class="card-text">Saldados: ${prestamosSaldados}</p>
+									<p class="card-text">Cumplibilidad de préstamos: ${cumplibilidad}</p>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-4  mt-3">
-							Préstamos activos: <label>${prestamosActivos}</label><br>
-							Préstamos atrasados: <label>${prestamosAtrasados}</label><br>
-							Préstamos saldados: <label>${prestamosSaldados}</label><br>
-							Cumplibilidad de préstamos: <label>${cumplibilidad}</label>%<br>
-
+						<div class="col">
+							<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+								<div class="card-header"> <h5>Saldos</h5> </div>
+								<div class="card-body">
+									<p class="card-text">Promedio por cuenta: ${saldoPromedio}</p>
+									<p class="card-text">Total en el banco: ${saldoBanco}</p>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-4  mt-5">
-							Saldo promedio por cuenta: <label>${saldoPromedio}</label><br>
-							Saldo total en el banco: <label>${saldoBanco}</label><br>
-
+						<div class="col">
+							<div class="card text-bg-light mb-3" style="max-width: 18rem;">
+								<div class="card-header"> <h5>Movimientos</h5> </div>
+								<div class="card-body">
+									<p class="card-text">Transferencias realizadas: ${transferencias}</p>
+									<p class="card-text">Totales realizados: ${movimientos}</p>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-4  mt-5">
-							Transferencias realizadas:  <label>${transferencias}</label><br>
-							<br>
-							Movimientos totales realizados:  <label>${movimientos}</label><br>
-							<br>
-						</div>
-					</div>
-					<div class="col-md-12">
-						<hr class="my-4">
 					</div>
 				</div>
 			</div>
-		</div>
 
 	<%}%>
 

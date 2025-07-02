@@ -13,6 +13,10 @@ public class NegocioMovimiento implements INegocioMovimientos {
 	    public ArrayList<Movimiento> obtenerMovimientosPorCuenta(int nroCuenta) {
 	        return daoMovimientos.obtenerMovimientosPorCuenta(nroCuenta);
 	    }
-		
+	    
+	    public ArrayList<Movimiento> obtenerMovimientosPorTipo(int nroCuenta, String tipomovimiento) {
+			
+			 return daoMovimientos.obtenerMovimientosPorTipo(nroCuenta, tipomovimiento);
+		}
 
 }
