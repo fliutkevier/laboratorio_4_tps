@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import Negocio.NegocioUsuario;
 import NegocioInterfaz.INegocioUsuario;
-import javax.servlet.http.HttpSession;  
 
 import Entidades.Cliente;
 import Entidades.CuentaBancaria;

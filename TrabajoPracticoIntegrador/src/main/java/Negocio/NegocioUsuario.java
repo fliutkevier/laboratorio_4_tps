@@ -1,7 +1,6 @@
 package Negocio;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Dao.DaoUsuario;
 import Entidades.Usuario;

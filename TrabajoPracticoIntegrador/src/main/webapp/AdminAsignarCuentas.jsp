@@ -12,7 +12,7 @@
 <body>
 	<jsp:include page="AdminNavBar.jsp"></jsp:include>
 	<div class="container mt-5">
-		<h2 class="mb-5 text-center"> Asignar cuentas</h2>
+		<h2 class="mb-5 text-center"> Asignar Cuentas Bancarias</h2>
 		
 		<form action="servletAdminClientes" method="get">
 		<div class="row justify-content-center mt-2">

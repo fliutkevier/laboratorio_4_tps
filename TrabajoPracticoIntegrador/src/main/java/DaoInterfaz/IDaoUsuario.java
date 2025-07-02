@@ -1,7 +1,6 @@
 package DaoInterfaz;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Entidades.Usuario;
 
