@@ -24,7 +24,10 @@
           <a class="nav-link" href="ClienteInicio.jsp">Cambiar Cuenta</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="ClienteHistorial.jsp">Historial</a>
+           <a href="#" id="linkHistorial" class="nav-link">Historial</a>
+          <form id="formHistorial" method="post" action="servletsClientes" style="display:none;">
+            <input type="hidden" name="btnVerHistorial" value="1" />
+          </form>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="ClientePrestamos.jsp">Préstamos</a>
@@ -46,6 +49,11 @@
     </div>
   </div>
 </nav>
-
+<script>
+  document.getElementById('linkHistorial').addEventListener('click', function(event) {
+    event.preventDefault(); 
+    document.getElementById('formHistorial').submit();
+  });
+</script>
 </body>
 </html>
