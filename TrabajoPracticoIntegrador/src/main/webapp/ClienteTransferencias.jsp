@@ -16,7 +16,7 @@
 	
 	<main class="container mt-5">
 		<h1 class="mb-4">Transferencias</h1>
-		<form action="servletsClientes" method="post">
+		<form id="formTransferencia" action="servletsClientes" method="post">
 			<div class="mb-3">
 				<h5>Cuenta de Origen:</h5>
 				<div class="card">
@@ -40,21 +40,21 @@
 				<label id="Monto" class="form-label">Monto a transferir</label>
 				<input required type="number" step="0.01" min="0" class="form-control" id="Monto" name="txtMonto" maxlength="22" placeholder="Ingrese el monto a transferir">
 			</div>
-      		<button type="submit" class="btn btn-primary mt-2" name="btnTransferir">Confirmar transferencia</button>
+      		<button type="submit" onclick="confirmarTransferencia()" class="btn btn-primary mt-2" name="btnTransferir">Confirmar transferencia</button>
       		<%
       		if(request.getAttribute("transferenciaRealizada") != null)
       		{
       			boolean transferenciaRealizada = (boolean)request.getAttribute("transferenciaRealizada");
       			if(transferenciaRealizada)
           		{%>
-          			<div class="card text-bg-success mb-3" style="max-width: 18rem;">
+          			<div class="card text-bg-success mt-3" style="max-width: 18rem;">
     				  <div class="card-body">
-    				    <h5 class="card-title">Se realizó la transferencia.</h5>
+    				    <h5 class="card-title">Se realizó la transferencia. Saldo restante: $ ${saldoRestante}</h5>
     				  </div>
     				</div>
           			
           		<%} else {%>
-          			<div class="card text-bg-danger mb-3" style="max-width: 18rem;">
+          			<div class="card text-bg-danger mt-3" style="max-width: 18rem;">
     				  <div class="card-body">
     				    <h5 class="card-title">No se pudo realizar la transferencia.</h5>
     				  </div>
@@ -67,5 +67,12 @@
 		</form>
 	</main>
 
+<script>
+        function confirmarTransferencia() {
+            if (confirm("¿Seguro de que desea realizar esta transferencia?")) {
+                document.getElementById("formTransferencia").submit();
+            }
+        }
+    </script>
 </body>
 </html>

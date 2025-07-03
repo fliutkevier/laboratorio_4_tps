@@ -88,14 +88,17 @@ public class servletsClientes extends HttpServlet {
 	
 	private void realizarTransferencia(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		CuentaBancaria cuentaOrigen = (CuentaBancaria)request.getSession().getAttribute("cuentaElegida");
+		INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
+		CuentaBancaria cuentaSeleccionada = (CuentaBancaria)request.getSession().getAttribute("cuentaElegida");
+		CuentaBancaria cuentaOrigen = negocioCuentaBancaria.obtenerCuentaPorCbu(cuentaSeleccionada.getCBU());
 		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
 		String cbuDestino = request.getParameter("txtCbuDestino");
 		
-		INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
 		if(negocioCuentaBancaria.transferir(cbuDestino, cuentaOrigen, monto, "Hago Transferencia, crear text box xd"))
 		{
 			request.setAttribute("transferenciaRealizada", true);
+			cuentaOrigen = negocioCuentaBancaria.obtenerCuentaPorCbu(cuentaSeleccionada.getCBU());
+			request.setAttribute("saldoRestante", cuentaOrigen.getSaldo());
 		}
 		else 
 		{

@@ -89,12 +89,24 @@
 </div>
 	<div class="row justify-content-center mt-4">
 		<div class="col-md-5 text-center">
-			<% 
-		    if (request.getAttribute("noCuentasBancarias") != null) { %>
+			<%
+			if (request.getAttribute("noCuentasBancarias") != null) { 
+		    int cant = (int) request.getAttribute("noCuentasBancarias");
+		    
+		    if (cant == 1) { %>
 			    <p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
 			    No se encuentran cuentas bancarias con los filtros pedidos.
 			    </p>
-			<% } %>
+			<% } else if(cant == 2) { %>
+					<p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
+				    El cliente no existe.
+				    </p>
+			    <% } else if(cant == 3) { %>
+					    <p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
+					    El cliente está dado de baja.
+					    </p>
+					<% } 
+			}%>
 		</div>
 	</div>
 </form>

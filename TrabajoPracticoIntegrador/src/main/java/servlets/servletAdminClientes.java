@@ -411,18 +411,29 @@ public class servletAdminClientes extends HttpServlet {
 	
 	private void buscarCuentasFiltradas(HttpServletRequest request, HttpServletResponse response,
 			String codigoCliente, String tipoCuenta, String estado) throws ServletException, IOException {
-			cargarTipoCuentas(request);
+		
+	    INegocioCliente negocioCliente = new NegocioCliente();
+	    Cliente cliente = negocioCliente.buscarClientePorCodigo(codigoCliente);
+	    
+	    if (cliente == null) {
+	    	request.setAttribute("noCuentasBancarias", 2);
+	    	request.getRequestDispatcher("/AdminCuentas.jsp").forward(request, response);
+	    }
+	    else if (!cliente.isEstado()) {
+	    	request.setAttribute("noCuentasBancarias", 3);
+	    	request.getRequestDispatcher("/AdminCuentas.jsp").forward(request, response);
+	    }
 
-			ArrayList<CuentaBancaria> cuentas = cuentaBancaria.buscarCuentasFiltradas(codigoCliente, tipoCuenta, estado);
-			if(cuentas != null && !cuentas.isEmpty()) {
-				request.setAttribute("cuentas", cuentas);
-				request.setAttribute("codigoCliente", codigoCliente);
-				request.setAttribute("tipoDeCuentas", tipoCuenta);
-				request.setAttribute("estadoCuentas", estado);
-			} else request.setAttribute("noCuentasBancarias", 1);
-			
-			request.getRequestDispatcher("/AdminCuentas.jsp").forward(request, response);
-			}
+		ArrayList<CuentaBancaria> cuentas = cuentaBancaria.buscarCuentasFiltradas(codigoCliente, tipoCuenta, estado);
+		if(cuentas != null && !cuentas.isEmpty()) {
+			request.setAttribute("cuentas", cuentas);
+			request.setAttribute("codigoCliente", codigoCliente);
+			request.setAttribute("tipoDeCuentas", tipoCuenta);
+			request.setAttribute("estadoCuentas", estado);
+		} else request.setAttribute("noCuentasBancarias", 1);
+		
+		request.getRequestDispatcher("/AdminCuentas.jsp").forward(request, response);
+	}
 	
 	private void cargarTipoCuentas(HttpServletRequest request) {
 		 ArrayList<TipoCuenta> lTipos = tiposCuenta.obtenerTiposCuenta();

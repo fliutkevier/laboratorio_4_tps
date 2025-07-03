@@ -55,7 +55,6 @@ public class DaoCuentaBancaria implements IDaoCuentaBancaria{
 	    return eliminado;
 	}
 	
-	// TOMANDO EN CUENTA SOLO CUENTAS ACTIVAS
 	public ArrayList<CuentaBancaria> obtenerCuentaPorCliente(String CodigoCliente) {
 		ArrayList<CuentaBancaria> lCuentas = new ArrayList<CuentaBancaria>();
 		Connection cn = null;
@@ -63,7 +62,7 @@ public class DaoCuentaBancaria implements IDaoCuentaBancaria{
 		try {
 			
 			cn = Conexion.getConexion().getSQLConexion();
-			String query = "SELECT NroCuenta, CodTipoCuenta, CodCliente, CBU, Saldo, Fecha_alta, Estado FROM cuentas WHERE CodCliente = ? AND Estado = 1";
+			String query = "SELECT NroCuenta, CodTipoCuenta, CodCliente, CBU, Saldo, Fecha_alta, Estado FROM cuentas WHERE CodCliente = ?";
 			
 			PreparedStatement pst = cn.prepareStatement(query);
 			pst.setInt(1, Integer.parseInt(CodigoCliente));
