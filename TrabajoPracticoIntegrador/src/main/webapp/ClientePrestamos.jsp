@@ -1,10 +1,9 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ page import="java.util.*"%>
     <%@ page import="Entidades.*"%>
     <%@ page import="java.text.SimpleDateFormat"%>
-    <%@ page import= "java.math.BigDecimal"%>;
+    <%@ page import= "java.math.BigDecimal"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,10 +17,8 @@
 	</header>
 	<main class="container mt-3">
 	
-	<% 	ArrayList<CuentaBancaria> cuentas;
-	double saldoact= 0;
-	BigDecimal saldoenCuentaActualizada;
-	double valorCuota =0;
+	<% 	ArrayList<CuentaBancaria> cuentas;	
+	BigDecimal saldoenCuentaActualizada;	
 	double cuota =0;%>
 	
 	<h3 class="mb-3 text-center">Sección Prestamos</h3>
@@ -84,7 +81,7 @@
         <%	if(request.getAttribute("prestamoAgregado") != null) {			
 		%>
 		<div class="alert alert-success mt-3" role="alert">
-            <i class="bi bi-check-circle-fill"></i> ¡Solicitud de Prestamo enviada! Una ves aprobado, podras verlo reflejado en Historial"
+            <i class="bi bi-check-circle-fill"></i> ¡Solicitud de Prestamo enviada! Una vez aprobado, podras verlo reflejado en Historial"
         </div><%
 		}
 		%>
@@ -99,13 +96,13 @@
 		 <form method="post" action="servletsClientes ">
                 <input type="submit" name="btnCargarPrestamos" class="btn btn-outline-secondary w-100 py-2" value="Pagar cuotas de tu prestamo existente">
                 
-                <%HttpSession sesion = request.getSession();
-                if(sesion.getAttribute("prestamosActuales")!= null){ %> 
+                <%
+                if(request.getSession().getAttribute("prestamosActuales")!= null){ %> 
                     <h6 class="fw-semibold fst-italic mb-3 mt-4">Seleccionar prestamo a pagar</h6>
                     
 				<select name="seleccionPrestamo" class="form-select">
 			    <%   
-			        ArrayList<Prestamo> prestamos = (ArrayList<Prestamo>) sesion.getAttribute("prestamosActuales");
+			        ArrayList<Prestamo> prestamos = (ArrayList<Prestamo>) request.getSession().getAttribute("prestamosActuales");
 			        //String cuentaSeleccionada = request.getParameter("numeroCuenta");
 			        
 			        if(prestamos != null && !prestamos.isEmpty()) {
@@ -137,13 +134,12 @@
 				<select name="seleccionCuentaPago" class="form-select">
 			    <% 
 			    ArrayList<CuentaBancaria> cuentaPago=null;
-				sesion = request.getSession();
-			    if(sesion.getAttribute("cuentasBancarias") != null)
+				if(request.getSession().getAttribute("cuentasBancarias") != null)
 			        cuentaPago = (ArrayList<CuentaBancaria>) session.getAttribute("cuentasBancarias");
 				if(cuentaPago != null && !cuentaPago.isEmpty()) {
 			            for(CuentaBancaria itemCuenta : cuentaPago) { 
 			            	String valorOption = String.valueOf(itemCuenta.getNroCuenta());
-			            	String datosCuenta = String.valueOf(cuenta.getTipoCuenta().getDescripcion()) + " - CBU " + String.valueOf(cuenta.getCBU()) + "  || Saldo actual: $ " + cuenta.getSaldo();
+			            	String datosCuenta = String.valueOf(itemCuenta.getTipoCuenta().getDescripcion()) + " - CBU " + String.valueOf(itemCuenta.getCBU()) + "  || Saldo actual: $ " + itemCuenta.getSaldo();
 			            	
 			                %>
 			                <option value="<%= valorOption %>">
@@ -171,7 +167,9 @@
                     
 				<select name="seleccionCuota" class="form-select">
 			    <% 
-			   
+			    double valorCuota = 0.0;
+		        double saldoact = 0.0;
+		        double saldoFinal = 0.0;
 			    ArrayList<Cuotas> listaCuotas = null;		
 			    if(session.getAttribute("listadoCuotas") != null)
 			    	listaCuotas = (ArrayList<Cuotas>) session.getAttribute("listadoCuotas");
@@ -179,31 +177,34 @@
 			    
 				if(listaCuotas != null && !listaCuotas.isEmpty()) {
 			            for(Cuotas itemCuota : listaCuotas) { 
-			            	String valorOption = String.valueOf(itemCuota.getCodigoCuota());
-			            	String datosCuenta = "Cuota Nro " + String.valueOf(itemCuota.getNumeroCuota()) +  " - Valor $ " + String.valueOf(itemCuota.getMontoCuota()) + 
-			                        (itemCuota.isEstado() ? " - Pagada" : " - A pagar");
-			            	valorCuota = itemCuota.getMontoCuota();
-			                %>
-			                <option value="<%= valorOption %>">
-                    		<%= datosCuenta %>
+			            	if(!itemCuota.isEstado())
+			            	{
+			            		String valorOption = String.valueOf(itemCuota.getNumeroCuota());
+				            	String datosCuenta = "Cuota Nro " + String.valueOf(itemCuota.getNumeroCuota()) +  " - Valor $ " + String.valueOf(itemCuota.getMontoCuota());
+				            	valorCuota = itemCuota.getMontoCuota();
+				                %>
+				                <option value="<%= valorOption %>">
+	                    		<%= datosCuenta %>
+			            	<%}%>
+			            	
                 </option>                
                 
 			    <% 
 			            }
 			        } else {
 			    %>
-			            <option disabled selected>No hay cuotas pendientes de pago</option>			            
+			            <option disabled selected>No hay cuotas pendientes de pago</option>
 			    <% 
 			        } 
 				if(session.getAttribute("saldoAntesdeDescontar") != null)
 				{
 					saldoact = (double) (session.getAttribute("saldoAntesdeDescontar"));
 				}	
-				
+				saldoFinal = saldoact - valorCuota;
 			    %>
 			</select>		
-			    <input type="text" class="form-control mb-2 mt-2" id="cuotas" value="Nuevo saldo en cuenta: $ <%= saldoact - valorCuota %> " readonly>
-				
+			    <input type="text" class="form-control mb-2 mt-2" id="cuotas" value="Nuevo saldo en cuenta: $ <%= saldoFinal %> " readonly>
+				<input type="hidden" name="saldoActualizado" value="<%= saldoFinal %>">
 			
                    
 		<button type="button"  class="btn btn-secondary mt-4 w-100 py-1" data-bs-toggle="modal" data-bs-target="#confirmarPagoModal"> Pagar Cuota</button>                 
@@ -226,9 +227,19 @@
         </div>
     </div>
 </div>
-                   <%} %>
-                   
-                   </form>
+			          <%}
+                   String mensaje="";
+                   if(request.getAttribute("mensajeExito")!= null) {
+                       mensaje = (String) session.getAttribute("mensajeExito");
+					%>
+					    <div class="alert alert-success mt-3" role="alert">
+					        <i class="bi bi-check-circle-fill"></i> <%= mensaje %>
+					    </div>
+					<%
+					    }
+					%>
+               
+                	   </form>  
                </div>
                    
                

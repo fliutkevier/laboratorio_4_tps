@@ -62,15 +62,21 @@ public class LoginServlet extends HttpServlet {
 					INegocioCliente negocioCliente = new NegocioCliente();
 					INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
 					Cliente cliente = negocioCliente.buscarClientePorUsuario(nombreUsuario);
-					ArrayList<CuentaBancaria> cuentasBancarias = negocioCuentaBancaria.buscarCuentasBancariasPorClienteAsignado(String.valueOf(cliente.getCodCliente()));
+					if(cliente.getUsuario().isEstado())
+					{
+						ArrayList<CuentaBancaria> cuentasBancarias = negocioCuentaBancaria.buscarCuentasBancariasPorClienteAsignado(String.valueOf(cliente.getCodCliente()));
+						request.getSession().setAttribute("clienteSesion", cliente);
+		                request.getSession().setAttribute("nombre", cliente.getNombre());
+		                request.getSession().setAttribute("apellido", cliente.getApellido());
+		                request.getSession().setAttribute("cuentasBancarias", cuentasBancarias);
+		                response.sendRedirect("ClienteInicio.jsp");
+					}
+					else {
+						inicioDenegado = "DATOS INCORRECTOS, intente nuevamente.";
+						request.getSession().setAttribute("inicioDenegado", inicioDenegado);
+						request.getRequestDispatcher("/Login.jsp").forward(request, response);
+					}
 					
-					if(cliente != null) {
-	                	request.getSession().setAttribute("clienteSesion", cliente);
-	                	request.getSession().setAttribute("nombre", cliente.getNombre());
-	                	request.getSession().setAttribute("apellido", cliente.getApellido());
-	                	request.getSession().setAttribute("cuentasBancarias", cuentasBancarias);
-	                }
-	                response.sendRedirect("ClienteInicio.jsp");
 				}
 				else if(tipoUsuario == 'A')
 				{
@@ -80,7 +86,7 @@ public class LoginServlet extends HttpServlet {
 			else {
 				inicioDenegado = "DATOS INCORRECTOS, intente nuevamente.";
 				request.getSession().setAttribute("inicioDenegado", inicioDenegado);
-				response.sendRedirect("Login.jsp");
+				request.getRequestDispatcher("/Login.jsp").forward(request, response);
 			}
 		}
 	}

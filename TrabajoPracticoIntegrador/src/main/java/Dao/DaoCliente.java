@@ -156,7 +156,7 @@ public class DaoCliente implements IDaoCliente{
 	        CallableStatement cs = cn.prepareCall("{ call EliminarCliente(?) }");
 	        cs.setInt(1, CodigoCliente);
 
-	        int filas = cs.executeUpdate();
+	        cs.executeUpdate();
 
 	        cn.commit();
 	        eliminado = true;
@@ -223,7 +223,7 @@ public class DaoCliente implements IDaoCliente{
 	    
 	    try {
 	        cn = Conexion.getConexion().getSQLConexion();
-	        String query = "SELECT IdUsuario FROM usuarios WHERE NombreUsuario = ? AND Estado = 1";
+	        String query = "SELECT IdUsuario FROM usuarios WHERE NombreUsuario = ?";
 	        PreparedStatement pst = cn.prepareStatement(query);
 	        pst.setString(1, usuario);
 	        ResultSet rs = pst.executeQuery();
@@ -244,6 +244,7 @@ public class DaoCliente implements IDaoCliente{
 	    return idUsuario;
 		
 	}
+	
 
 
 	
@@ -322,8 +323,6 @@ public class DaoCliente implements IDaoCliente{
 	    }
 
 	    return cliente;
-		
-		
 	}
 
 

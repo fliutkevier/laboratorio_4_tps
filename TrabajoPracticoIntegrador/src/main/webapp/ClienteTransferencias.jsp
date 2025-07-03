@@ -34,11 +34,15 @@
       		</div>
       		<div class="mb-3">
 				<label id="cbuDestino" class="form-label">CBU destino</label>
-				<input required type="number" min="0" step="1" class="form-control" id="cbuDestino" name="txtCbuDestino" maxlength="22" placeholder="Ingrese el CBU de la cuenta destino">
+				<input required type="number" min="0" step="1" oninput="this.value = this.value.replaceAll(/[.,]/g, '')" class="form-control" id="cbuDestino" name="txtCbuDestino" maxlength="22" placeholder="Ingrese el CBU de la cuenta destino">
 			</div>
 			<div class="mb-3">
 				<label id="Monto" class="form-label">Monto a transferir</label>
-				<input required type="number" step="0.01" min="0" class="form-control" id="Monto" name="txtMonto" maxlength="22" placeholder="Ingrese el monto a transferir">
+				<input required type="number" step="0.01" min="0" oninput="this.value = this.value.replaceAll(/[.,]/g, '')" class="form-control" id="Monto" name="txtMonto" maxlength="22" placeholder="Ingrese el monto a transferir">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Detalles</label>
+				<input required type="text" class="form-control" name="txtDetalle" maxlength="80" placeholder="Ingrese detalle de transferencia">
 			</div>
       		<button type="submit" onclick="confirmarTransferencia()" class="btn btn-primary mt-2" name="btnTransferir">Confirmar transferencia</button>
       		<%

@@ -78,9 +78,15 @@ public class NegocioCuentaBancaria implements INegocioCuentaBancaria{
 	{
 		return cuentaDao.darAltaCuenta(numeroCuenta);
 	}
+	
 	public CuentaBancaria ObtenerporID(int id)
 	{
 		return cuentaDao.ObtenerCuentaporID(id);
+	}
+	
+	public boolean descontarCuota( BigDecimal monto, int numeroCuenta)
+	{
+		return cuentaDao.modificarSaldoEnCuenta(monto, numeroCuenta);
 	}
 
 	public CuentaBancaria obtenerCuentaPorCbu(String cbu) {

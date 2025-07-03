@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" import="Entidades.Cliente" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +11,7 @@
 <body>
 
 <%
-    Entidades.Cliente cliente = (Entidades.Cliente) session.getAttribute("clienteSesion");
+    Cliente cliente = (Entidades.Cliente) session.getAttribute("clienteSesion");
 %>
 
 <jsp:include page="ClienteNavBar.jsp"></jsp:include>

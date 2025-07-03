@@ -196,22 +196,110 @@ insert into Provincias (Descripcion) values
     ('Río Negro');
 
 insert into Localidades (IdProvincia, Descripcion) values 
-    (1, 'La Plata'),               -- Buenos Aires
-    (2, 'Villa Carlos Paz'),       -- Córdoba
-    (3, 'Godoy Cruz'),             -- Mendoza
-    (4, 'Rosario'),                -- Santa Fe
-    (5, 'Salta Capital'),          -- Salta
-    (6, 'San Miguel de Tucumán'),  -- Tucumán
-    (7, 'Neuquén Capital'),        -- Neuquén
-    (8, 'Comodoro Rivadavia'),     -- Chubut
-    (9, 'Posadas'),                -- Misiones
-    (10, 'Corrientes Capital'),    -- Corrientes
-    (11, 'Paraná'),                -- Entre Ríos
-    (12, 'Santa Rosa'),            -- La Pampa
-    (13, 'San Juan Capital'),      -- San Juan
-    (14, 'Villa Mercedes'),        -- San Luis
-    (15, 'Bariloche');			   -- Rio Negro
+	(1, 'La Plata'),
+	(1, 'Mar del Plata'),
+	(1, 'Bahía Blanca'),
+	(1, 'Tigre'),
+	(1, 'San Isidro'),
 
+	-- Córdoba (2)
+    (2, 'Villa Carlos Paz'),
+	(2, 'Córdoba Capital'),
+	(2, 'Río Cuarto'),
+	(2, 'Alta Gracia'),
+	(2, 'Jesús María'),
+
+	-- Mendoza (3)
+    (3, 'Godoy Cruz'),
+	(3, 'San Rafael'),
+	(3, 'Luján de Cuyo'),
+	(3, 'Maipú'),
+	(3, 'Tunuyán'),
+
+	-- Santa Fe (4)
+    (4, 'Rosario'),
+	(4, 'Santa Fe Capital'),
+	(4, 'Rafaela'),
+	(4, 'Venado Tuerto'),
+	(4, 'Villa Gobernador Gálvez'),
+
+	-- Salta (5)
+    (5, 'Salta Capital'),
+	(5, 'Cafayate'),
+	(5, 'Orán'),
+	(5, 'Tartagal'),
+	(5, 'General Güemes'),
+
+	-- Tucumán (6)
+    (6, 'San Miguel de Tucumán'),
+	(6, 'Yerba Buena'),
+	(6, 'Tafí Viejo'),
+	(6, 'Famaillá'),
+	(6, 'Concepción'),
+
+	-- Neuquén (7)
+    (7, 'Neuquén Capital'),
+	(7, 'Cutral Có'),
+	(7, 'Plottier'),
+	(7, 'Zapala'),
+	(7, 'Centenario'),
+
+	-- Chubut (8)
+    (8, 'Comodoro Rivadavia'),
+	(8, 'Puerto Madryn'),
+	(8, 'Trelew'),
+	(8, 'Esquel'),
+	(8, 'Rawson'),
+
+	-- Misiones (9)
+    (9, 'Posadas'),
+	(9, 'Eldorado'),
+	(9, 'Oberá'),
+	(9, 'Puerto Iguazú'),
+	(9, 'Apóstoles'),
+
+	-- Corrientes (10)
+    (10, 'Corrientes Capital'),
+	(10, 'Goya'),
+	(10, 'Paso de los Libres'),
+	(10, 'Bella Vista'),
+	(10, 'Mercedes'),
+
+	-- Entre Ríos (11)
+    (11, 'Paraná'),
+	(11, 'Concordia'),
+	(11, 'Gualeguaychú'),
+	(11, 'Concepción del Uruguay'),
+	(11, 'Villaguay'),
+
+	-- La Pampa (12)
+    (12, 'Santa Rosa'),
+	(12, 'General Pico'),
+	(12, 'Toay'),
+	(12, 'General Acha'),
+	(12, 'Intendente Alvear'),
+
+	-- San Juan (13)
+    (13, 'San Juan Capital'),
+	(13, 'Rawson'),
+	(13, 'Chimbas'),
+	(13, 'Pocito'),
+	(13, 'Santa Lucía'),
+
+	-- San Luis (14)
+    (14, 'Villa Mercedes'),
+	(14, 'San Luis Capital'),
+	(14, 'La Punta'),
+	(14, 'Villa de Merlo'),
+	(14, 'Justo Daract'),
+
+	-- Río Negro (15)
+	(15, 'Viedma'),
+	(15, 'General Roca'),
+	(15, 'Cipolletti'),
+	(15, 'Villa Regina'),
+    (15, 'Bariloche');
+    		
 insert into Clientes (IdUsuario,IdNacionalidad,IdProvincia,IdLocalidad,DNI,CUIL,Nombre,Apellido,Sexo,Direccion,FechaNacimiento,Telefono,CorreoElectronico,Estado) values 
 	(1, 1, 1, 1, '12345678', '20123456789', 'Juan', 'Pérez', 'M', 'Calle Falsa 123', '1990-05-10', '1155555555', 'juanp@email.com', 1),
 	(2, 2, 2, 2, '87654321', '20234567890', 'Marta', 'López', 'F', 'Av. Central 456', '1985-08-22', '1166666666', 'martal@email.com', 1),
@@ -281,18 +369,7 @@ insert into prestamos (CodCliente, NroCuentaAsociado, Fecha, ImportePagar, Impor
 	(5, 5, '2023-12-15 09:00:00', 21600.00, 18000.00, 12, 1800.00, 12, 0, 1),
 	(6, 6, '2024-05-01 13:00:00', 9600.00, 8000.00, 6, 1600.00, 6, 1, 1),
 	(7, 7, '2024-06-02 10:30:00', 32400.00, 27000.00, 18, 1800.00, 18, 1, 1),
-	(8, 8, '2024-08-01 12:00:00', 36000.00, 30000.00, 12, 3000.00, 12, 1, 1),
-	(9, 9, '2024-10-10 11:00:00', 24000.00, 20000.00, 10, 2400.00, 10, 0, 1),
-	(10,10, '2025-02-05 09:30:00', 26400.00, 22000.00, 12, 2200.00, 12, 1, 1),
-	(11,11, '2025-03-03 12:00:00', 12000.00, 10000.00, 10, 1200.00, 10, 0, 1),
-	(12,12, '2024-10-30 17:10:00', 14400.00, 12000.00, 12, 1200.00, 12, 1, 1),
-	(13,13, '2023-09-12 13:10:00', 28800.00, 24000.00, 24, 1200.00, 24, 1, 1),
-	(14,14, '2025-03-18 08:25:00', 36000.00, 30000.00, 12, 3000.00, 12, 1, 1),
-	(15,15, '2025-06-21 08:00:00', 19200.00, 16000.00, 8, 2400.00, 8, 0, 0),
-    (10,10, '2025-06-29 09:00:00', 30000.00, 25000.00, 6, 5000.00, 6 , 1, 0),
-    (11,11, '2025-06-29 12:00:00', 30000.00, 25000.00, 6, 5000.00, 6, 1, 0),
-    (12,12, '2025-06-29 15:00:00', 30000.00, 25000.00, 6, 5000.00, 6, 1, 0),
-    (13,13, '2025-06-29 18:00:00', 30000.00, 25000.00, 6, 5000.00, 6, 1, 0);
+	(8, 8, '2024-08-01 12:00:00', 36000.00, 30000.00, 12, 3000.00, 12, 1, 1);
     
 INSERT INTO Cuotas (CodPrestamo, NumeroCuota, MontoCuota)
 SELECT 1, n, 1000.00

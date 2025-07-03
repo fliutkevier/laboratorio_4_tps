@@ -52,8 +52,8 @@ public class servletAdminClientes extends HttpServlet {
     ArrayList<Usuario> usuarios;
     Usuario usuarioA;
     INegocioPrestamo negPrestamo = new NegocioPrestamo();
-    noExisteClienteException exc1 = new noExisteClienteException();
-    clienteBajaException exc2 = new clienteBajaException();
+    /*noExisteClienteException exc1 = new noExisteClienteException();
+    clienteBajaException exc2 = new clienteBajaException();*/
 
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -552,7 +552,7 @@ public class servletAdminClientes extends HttpServlet {
         request.setAttribute("provinciaSeleccionada", idProvincia);
     }
 	
-    private void mostrarTodosUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /*private void mostrarTodosUsuarios(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
         	ArrayList<Usuario> usuarios = negUsuario.Listar();            
             request.setAttribute("listaU", usuarios);
@@ -578,7 +578,7 @@ public class servletAdminClientes extends HttpServlet {
             request.setAttribute("mensajeError", "Cliente no encontrado.");
             request.getRequestDispatcher("/Error.jsp").forward(request, response);
         }
-    }
+    }*/
     
     private void cargarUsuariosYRedirigir(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
@@ -686,7 +686,11 @@ public class servletAdminClientes extends HttpServlet {
 	                  boolean insertado = negocio.Agregar(c, idGenerado);
 
 	                  if (insertado) {
-	                      request.setAttribute("mensaje", "Exito: Cliente agregado correctamente."); } 
+	                      request.setAttribute("mensaje", "Exito: Cliente agregado correctamente.");
+	                      INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
+	                      INegocioCliente negocioCliente = new NegocioCliente();
+	                      negocioCuentaBancaria.asignarCuenta(negocioCliente.buscarClientePorUsuario(u.getNombreUsuario()).getCodCliente(), 'A');
+	                      } 
 	                  else {
 	                      request.setAttribute("mensaje", "Error: No se pudo agregar el cliente."); }
 	            

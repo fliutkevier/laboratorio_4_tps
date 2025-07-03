@@ -5,20 +5,32 @@ import java.util.ArrayList;
 import Dao.DaoCuotas;
 import DaoInterfaz.IDaoCuotas;
 import Entidades.Cuotas;
-import Entidades.Prestamo;
 import NegocioInterfaz.INegocioCuotas;
 
 public class NegocioCuotas implements INegocioCuotas{
 	IDaoCuotas dao = new DaoCuotas();
 	
-	public ArrayList<Cuotas >listarCuotasPorIdPrestamo (int num)
+	public ArrayList<Cuotas>listarCuotasPorIdPrestamo (int num)
 	{
 		return dao.obtenerCuotasDelPrestamo(num);
 	}
-	public int CrearCuotasdePrestamo (int Codprestamo, int numeroCuota, int montoCuota)
+	
+	public boolean cuotasSaldadas(int idPrestamo)
 	{
-		return dao.creacionCuotas (Codprestamo, numeroCuota, montoCuota);
-	}
+		ArrayList<Cuotas> cuotas = dao.obtenerCuotasDelPrestamo(idPrestamo);
 		
-
+		for (Cuotas itemCuota : cuotas) {
+			if (!itemCuota.isEstado())
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public int pagarCuotaSeleccionada (int idprestamo, int idCuota)
+	{
+		return dao.pagarCuota(idprestamo, idCuota);
+	}
 }

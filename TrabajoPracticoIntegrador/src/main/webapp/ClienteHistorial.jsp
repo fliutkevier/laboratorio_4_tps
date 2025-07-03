@@ -39,14 +39,6 @@
 	<main class="container mt-5">
     <h1 class="mb-4">Historial de Movimientos</h1>
     
-    
-    
-    <%
-    CuentaBancaria cuentaElegida = (CuentaBancaria) session.getAttribute("cuentaElegida");
-    int nroCuenta = cuentaElegida != null ? cuentaElegida.getNroCuenta() : -1;
-	%>
-	
-	
 	<form method="post" action="servletsClientes" class="row g-3">
 
     <div class="col-md-4">

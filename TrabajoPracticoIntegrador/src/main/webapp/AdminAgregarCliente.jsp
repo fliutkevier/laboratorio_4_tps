@@ -27,11 +27,11 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="nombre" class="form-label">Nombre</label>
-                    <input required type="text" pattern="[a-zA-Z\ áéíóúÁÉÍÓÚñÑüÜ]*" class="form-control" id="nombre" name="txtNombre" value="${nombre}">
+                    <input required type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$" class="form-control" id="nombre" name="txtNombre" value="${nombre}">
                 </div>
                 <div class="col-md-6">
                     <label for="apellido" class="form-label">Apellido</label>
-                    <input required type="text" pattern="[a-zA-Z\ áéíóúÁÉÍÓÚñÑüÜ]*" class="form-control" id="apellido" name="txtApellido" value="${apellido}">
+                    <input required type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúñÑüÜ ]+$" class="form-control" id="apellido" name="txtApellido" value="${apellido}">
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                     <label for="nacionalidad" class="form-label">Nacionalidad</label>
                     <select required class="form-select" id="nacionalidad" name="ddlnacionalidad">
                     <option value="">Seleccione</option>
-                        ${nacionalidades}
+                    <option>${nacionalidades}</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -70,14 +70,14 @@
                     <label for="provincia" class="form-label">Provincia</label>
                     <select required class="form-select" id="provincia" name="ddlprovincia" onchange="cargarLocalidades()">
                     <option value="">Seleccione</option>
-                        ${provincias}
+                     <option>${provincias}</option>
                         </select>
                 </div>
                 <div class="col-md-4">
                     <label for="localidad" class="form-label">Localidad</label>
                     <select required class="form-select" id="localidad" name="ddllocalidad">
                         <option value="">Seleccione</option>
-                        ${localidades}
+                        <option>${localidades}</option>
                     </select>
                 </div>
                 <div class="col-md-4">

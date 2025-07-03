@@ -23,20 +23,15 @@ public class NegocioCliente implements INegocioCliente {
     }
     
     public Cliente buscarClientePorUsuario(String Usuario) {
-        if (Usuario == null ) {
-        return null;
-        
-    }
-        int idUsuario = clienteDao.obtenerIdUsuarioPorNombreUsuario(Usuario);
-        if (idUsuario == 0) {
-            return null; 
+        if (Usuario == null) 
+        {
+        	return null;
         }
-
+        
+        int idUsuario = clienteDao.obtenerIdUsuarioPorNombreUsuario(Usuario);
         
         return clienteDao.obtenerClientePorIdUsuario(idUsuario);
-    
-    
-}
+    }
 
 	
     public boolean Agregar(Cliente cliente, int iDusuario) {

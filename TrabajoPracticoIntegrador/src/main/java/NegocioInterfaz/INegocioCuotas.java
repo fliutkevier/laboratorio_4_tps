@@ -5,6 +5,6 @@ import Entidades.*;
 
 public interface INegocioCuotas {
 	public ArrayList<Cuotas>listarCuotasPorIdPrestamo (int num);
-	public int CrearCuotasdePrestamo (int Codprestamo, int numeroCuota, int montoCuota);
-
+	public int pagarCuotaSeleccionada (int idprestamo, int idCuota);
+	public boolean cuotasSaldadas(int idPrestamo);
 }

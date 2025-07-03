@@ -14,4 +14,6 @@ public interface IDaoPrestamo {
 	public boolean aceptarPrestamo(int codPrestamo);
 	public int agregarPrestamo(Prestamo pres);
 	public ArrayList<Prestamo> obtenerPrestamosSaldados();
+	public boolean saldarPrestamo(int codPrestamo);
+	public ArrayList<Prestamo> obtenerPrestamosAceptadosPorNroCuenta(int nroCuenta);
 }

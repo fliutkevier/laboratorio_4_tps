@@ -14,4 +14,6 @@ public interface INegocioPrestamo {
 	public boolean aceptarPrestamo(int codPrestamo);
 	public int agregarNuevoPrestamo(Prestamo prestamo);
 	public ArrayList<Prestamo> obtenerPrestamosSaldados();
+	public boolean saldarPrestamo(int idPrestamo);
+	public ArrayList<Prestamo> obtenerPrestamosAceptadosPorNroCuenta(int nroCuenta);
 }

@@ -29,68 +29,59 @@
 <div class="container mt-5">
 		<h2 class="mb-5 text-center"> Cuentas bancarias</h2>
 		
-<div class="row justify-content-center mt-2">
-		<div class="col-md-2">
-			<label for="cliente" class="form-label mt-1">Buscar cuentas asociadas a:</label>
+		
+		<div class="row justify-content-center mt-2">
+			<div class="col-md-2">
+				<label for="cliente" class="form-label mt-1">Buscar cuentas asociadas a:</label>
+			</div>
+			<div class="col-md-3">
+				 <input type="text" id="cliente" class="form-control" name="codigoCliente" placeholder="Ingresar código del cliente" >
+			</div>
 		</div>
-		<div class="col-md-3">
-			 <input type="text" id="cliente" class="form-control" name="codigoCliente" placeholder="Ingresar código del cliente" >
+
+		<div class="row justify-content-center mt-2">
+			<div class="col-md-2">
+				<label for="cliente" class="form-label mt-1">Buscar cuentas de tipo:</label>
+			</div>
+			<div class="col-md-3">
+				<select class="form-select w-100" id="tipoCuenta" name="tipoDeCuentas" style="width: 262px;">
+	      			<option value="">Seleccione</option>
+	      			<option value="A">Caja de ahorro</option>
+	      			<option value="C">Cuenta corriente</option>
+	  	 		</select>
+	  		</div>
 		</div>
-</div>
-<div class="row justify-content-center mt-2">
-		<div class="col-md-2">
-			<label for="cliente" class="form-label mt-1">Buscar cuentas de tipo:</label>
+
+		<div class="row justify-content-center mt-2">
+			<div class="col-md-2">
+				<label for="cliente" class="form-label mt-1">Buscar por estado:</label>		
+			</div>
+			<div class="col-md-3">
+				<select class="form-select w-100" id="estadoCuenta" name="estadoCuentas" style="width: 263px;">
+		    	  <option value="">Activas / Desactivadas</option>
+		    	  <%
+					String estadoCuentas = request.getParameter("estadoCuentas");
+					if (estadoCuentas == null) estadoCuentas = "";
+					%>
+					<option value="1" <%= "1".equals(estadoCuentas) ? "selected" : "" %>>Activas</option>
+					<option value="0" <%= "0".equals(estadoCuentas) ? "selected" : "" %>>Desactivadas</option>
+		    	</select>
+			</div>
 		</div>
-		<div class="col-md-3 ">
-		<select class="form-select w-100" id="tipoCuenta" name="tipoDeCuentas" style="width: 262px; ">
-      		<option value="">Seleccione</option>
-      		<%
-      			INegocioTipoCuenta negocioTiposCuenta = new NegocioTipoCuenta();
-      			
-      			ArrayList<TipoCuenta> tiposCuenta = negocioTiposCuenta.obtenerTiposCuenta();
-      			String tipoSeleccionado = request.getParameter("tipoDeCuentas");
-      			if(tiposCuenta != null){
-      				for(TipoCuenta tipo : tiposCuenta){
-      		%>
-      				<option value="<%= tipo.getCodTipoCuenta() %>" 
-					    <%= (tipoSeleccionado != null && tipoSeleccionado.equals(String.valueOf(tipo.getCodTipoCuenta()))) ? "selected" : "" %>>
-					    <%= tipo.getDescripcion() %>
-					</option>
-      		<%
-      				}
-      			}
-      		%>
-  	 	</select>
-  		</div>
-</div>
 
-
-<div class="row justify-content-center mt-2">
-		<div class="col-md-2">
-			<label for="cliente" class="form-label mt-1">Buscar por estado:</label>		
+		<div class="row justify-content-center mt-3">
+			<input type="submit" class="btn btn-primary mt-2 w-25" name="btnBuscar" value="BuscarCuenta">
 		</div>
-		<div class="col-md-3">
-		<select class="form-select w-100" id="estadoCuenta" name="estadoCuentas" style="width: 263px;">
-    	  <option value="">Activas / Desactivadas</option>
-    	  <option value="1" <%= "1".equals(request.getParameter("estadoCuentas")) ? "selected" : "" %>>Activas</option>
-    	  <option value="0" <%= "0".equals(request.getParameter("estadoCuentas")) ? "selected" : "" %>>Desactivadas</option>
-    	</select>
-		</div>
+
+		<br>
 </div>
+</form>
 
 
-
-
-
- <div class="row justify-content-center mt-3">
-	<input type="submit" class="btn btn-primary mt-2 w-25 " name="btnBuscar" value="BuscarCuenta">
-</div>
-<br>
-</div>
-	<div class="row justify-content-center mt-4">
-		<div class="col-md-5 text-center">
-			<%
-			if (request.getAttribute("noCuentasBancarias") != null) { 
+<div class="row justify-content-center mt-4">
+	<div class="col-md-5 text-center">
+		<%
+		if (request.getAttribute("noCuentasBancarias") != null) { 
 		    int cant = (int) request.getAttribute("noCuentasBancarias");
 		    
 		    if (cant == 1) { %>
@@ -98,19 +89,20 @@
 			    No se encuentran cuentas bancarias con los filtros pedidos.
 			    </p>
 			<% } else if(cant == 2) { %>
-					<p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
-				    El cliente no existe.
-				    </p>
-			    <% } else if(cant == 3) { %>
-					    <p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
-					    El cliente está dado de baja.
-					    </p>
-					<% } 
-			}%>
-		</div>
+				<p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
+			    El cliente no existe.
+			    </p>
+			<% } else if(cant == 3) { %>
+				<p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
+			    El cliente está dado de baja.
+			    </p>
+			<% } 
+		}%>
 	</div>
-</form>
- <div class="row justify-content-center mt-5">
+</div>
+
+
+<div class="row justify-content-center mt-5">
  <div class="col-md-6">
  	    <table id="table_id" class="display">
         <thead class="table-light">
@@ -127,66 +119,66 @@
         </thead>
         <tbody>
         <% 
-        
         	ArrayList<CuentaBancaria> cuentas = (ArrayList<CuentaBancaria>) request.getAttribute("cuentas");
-        	String codigoCliente = request.getParameter("codigoCliente");
         	
         	if (cuentas != null && !cuentas.isEmpty()) {
         		for (CuentaBancaria cuenta : cuentas) {
-        
-         %>
+        %>
              <tr>
-             	<form action="servletAdminClientes" method="post">
-	                <td><%= cuenta.getNroCuenta() %> </td>
-	                <td><%= cuenta.getTipoCuenta().getDescripcion() %></td>
-	                <td><%= cuenta.getCliente().getNombre() %></td>
-	                <td><%= cuenta.getCBU() %></td>
-	                <td><%= cuenta.getSaldo() %></td>
-	                <td><%= cuenta.getFecha_alta() %></td>
-	                <td><input type="checkbox" name="estado" id="chkEstado"
-	         			<%= cuenta.isEstado() ? "checked" : "" %> disabled /></td>
-	         		<input type="hidden" name="estadoActual" value="<%= cuenta.isEstado() %>" />
-	   				<input type="hidden" name="nroCuenta" value="<%= cuenta.getNroCuenta() %>" />
-	   				<td><input type="submit" class="btn btn-warning" name="btnEditar" value="Cambiar estado" onclick="return confirmarCambio('<%= cuenta.getNroCuenta() %>')"></td>
-   				</form>
+                <td><%= cuenta.getNroCuenta() %> </td>
+                <td><%= cuenta.getTipoCuenta().getDescripcion() %></td>
+                <td><%= cuenta.getCliente().getNombre() %></td>
+                <td><%= cuenta.getCBU() %></td>
+                <td><%= cuenta.getSaldo() %></td>
+                <td><%= cuenta.getFecha_alta() %></td>
+                <td>
+                	<input type="checkbox" name="estado" id="chkEstado"
+	         		<%= cuenta.isEstado() ? "checked" : "" %> disabled />
+	         	</td>
+                <td>
+	                <form action="servletAdminClientes" method="post" onsubmit="return confirmarCambio('<%= cuenta.getNroCuenta() %>')">
+	   					<input type="hidden" name="estadoActual" value="<%= cuenta.isEstado() %>" />
+	   					<input type="hidden" name="nroCuenta" value="<%= cuenta.getNroCuenta() %>" />
+	   					<input type="submit" class="btn btn-warning" name="btnEditar" value="Cambiar estado">
+	   				</form>
+   				</td>
             </tr>
-        	<% 
+        <% 
         		}
-        	}	else {
-        	 %>
-        	 <tr>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 	<td>&nbsp;</td>
-        	 </tr>
-        	 <%
-        	 	}
-        	  %>
+        	} else {
+        %>
+        	<tr>
+        	 	<td colspan="8" class="text-center">No hay cuentas para mostrar.</td>
+        	</tr>
+        <%
+        	}
+        %>
         </tbody>
        </table>
        <br>
+
+       
        <% 
-		    if (request.getAttribute("cambio") != null) { 
-		    boolean cant = (boolean) request.getAttribute("cambio"); %>
-		    <% if (cant != false) { %>
-		   		 <label class="text-success fw-bold fs-4 d-block text-center mb-4 p-3 border border-success rounded bg-light"> ${confirmacionEditarEstado}</label>
-			    	<% } else {%>
-			    <p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
+	    if (request.getAttribute("cambio") != null) { 
+		    boolean cant = (boolean) request.getAttribute("cambio"); 
+		    if (cant) { 
+		%>
+		    <label class="text-success fw-bold fs-4 d-block text-center mb-4 p-3 border border-success rounded bg-light">
+		    	${confirmacionEditarEstado}
+		    </label>
+		<% } else { %>
+		    <p class="text-danger fs-5 fw-bold text-center mb-4 p-3 border border-danger rounded bg-light w-100 shadow-sm">
 			    ERROR: No se pudo cambiar el estado de la cuenta.
-			    </p>
-			<% }
-			} %>
+			</p>
+		<% }
+		} %>
  </div>
 </div> 
-	<script>
-        function confirmarCambio(nroCuenta) {
-        	return confirm("¿Estás seguro de que deseas cambiar el estado de la cuenta N° " + nroCuenta + "?");
-        }
-	</script>
+
+<script>
+    function confirmarCambio(nroCuenta) {
+    	return confirm("¿Estás seguro de que deseas cambiar el estado de la cuenta N° " + nroCuenta + "?");
+    }
+</script>
 </body>
 </html>

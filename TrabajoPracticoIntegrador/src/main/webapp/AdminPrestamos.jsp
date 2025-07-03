@@ -46,15 +46,15 @@
         		<label for="txtNroCuenta" class="form-label">Buscar préstamos pendientes por número de cuenta:</label>
         		<input type="number" id="txtNroCuenta" name="txtNroCuenta" class="form-control" min="1" step="1" pattern="\d+" title="Ingrese un número entero positivo">
         		<button type="submit" name="btnBuscarP" class="btn btn-primary mt-2">Buscar</button><br>
-        		<%
-    String mensaje = (String) request.getAttribute("mensaje");
-    if (mensaje != null) {
-        boolean esExito = mensaje.toLowerCase().contains("exito");
-%>
-    <div class="alert <%= esExito ? "alert-success" : "alert-danger" %> mt-2">
-        <%= mensaje %>
-    </div>
-<% } %>
+			<%
+			    String mensaje = (String) request.getAttribute("mensaje");
+			    if (mensaje != null) {
+			        boolean esExito = mensaje.toLowerCase().contains("exito");
+			%>
+			    <div class="alert <%= esExito ? "alert-success" : "alert-danger" %> mt-2">
+			        <%= mensaje %>
+			    </div>
+			<% } %>
         		<br><label for="txtMostrarPrestamos" class="form-label">Mostrar Prestamos:</label><br>
         		<button type="submit" name="btnPendiente" class="btn btn-primary mt-2">Pendientes</button><br>
         		<button type="submit" name="btnAceptado" class="btn btn-primary mt-2">Aceptados</button><br>
@@ -101,9 +101,8 @@
         		<%
         		     if(listaPrestamos != null){
         		     for(Prestamo p : listaPrestamos){ %>         		
-        		
-            		<tr>   
-            		<form action="servletAdminClientes" method="post">       		
+        		   <tr>
+            		<form action="servletAdminClientes" method="post">
                 		<td><%=p.getCodPrestamo() %> <input type="hidden" name="codPrestamo" value="<%=p.getCodPrestamo()%>"></td>
                 		<td><%=p.getClienteAsociado().getCodCliente() %></td>
                 		<td><%=p.getCuentaAsociada().getNroCuenta() %></td>
@@ -120,7 +119,7 @@
     <input type="submit" name="btnAceptarP" class="btn btn-success btn-sm" value="Aceptar" onclick="confirmarAccion(event, 'aceptar')"><br>
     <input type="submit" name="btnRechazarP" class="btn btn-danger btn-sm" value="Rechazar" onclick="confirmarAccion(event, 'rechazar')">
 <% } else { %>
-    <!-- no muestra los botones si la lista es de aceptados, rechazados o saldados -->
+   
 <% } %>
 </td>
                                                

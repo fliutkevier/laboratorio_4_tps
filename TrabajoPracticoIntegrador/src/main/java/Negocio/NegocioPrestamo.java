@@ -40,6 +40,7 @@ public class NegocioPrestamo implements INegocioPrestamo{
 	public boolean aceptarPrestamo(int codPrestamo) {
 		return dao.aceptarPrestamo(codPrestamo);
 	}
+	
 	public int agregarNuevoPrestamo(Prestamo prestamo)
 	{
 		return dao.agregarPrestamo(prestamo);
@@ -50,6 +51,13 @@ public class NegocioPrestamo implements INegocioPrestamo{
 		return dao.obtenerPrestamosSaldados();
 	}
 	
-	
+	public boolean saldarPrestamo(int idPrestamo)
+	{
+		return dao.saldarPrestamo(idPrestamo);
+	}
 
+	public ArrayList<Prestamo> obtenerPrestamosAceptadosPorNroCuenta(int nroCuenta)
+	{
+		return dao.obtenerPrestamosAceptadosPorNroCuenta(nroCuenta);
+	}
 }

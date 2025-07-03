@@ -15,4 +15,6 @@ public interface INegocioCuentaBancaria {
 	public CuentaBancaria ObtenerporID(int id);
 	public CuentaBancaria obtenerCuentaPorCbu(String cbu);
 	public boolean transferir(String cbuDestino, CuentaBancaria cuentaOrigen, BigDecimal montoTransferido, String detalle);
+	public boolean descontarCuota( BigDecimal monto, int numeroCuenta);
+
 }

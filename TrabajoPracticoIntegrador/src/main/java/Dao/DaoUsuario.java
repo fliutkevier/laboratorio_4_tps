@@ -52,48 +52,48 @@ public class DaoUsuario implements IDaoUsuario{
         
         
 
-public ArrayList<Usuario> Listar() {
-		
-		ArrayList<Usuario> lista = new ArrayList<Usuario>();
-		Connection cn = null;
-		try{
-			cn = Conexion.getConexion().getSQLConexion();
-            String query = "SELECT U.IdUsuario, U.IdTipoUsuario, T.Descripcion, " +
-                    "C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado " +
-                    "FROM usuarios U " +
-                    "INNER JOIN tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario " +
-                    "INNER JOIN clientes C ON C.IdUsuario = U.IdUsuario";
-            PreparedStatement pst = cn.prepareStatement(query);		       
-			ResultSet rs = pst.executeQuery();
+	public ArrayList<Usuario> Listar() {
 			
-			
-			while(rs.next()){
+			ArrayList<Usuario> lista = new ArrayList<Usuario>();
+			Connection cn = null;
+			try{
+				cn = Conexion.getConexion().getSQLConexion();
+	            String query = "SELECT U.IdUsuario, U.IdTipoUsuario, T.Descripcion, C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado\r\n"
+	            		+ "FROM usuarios U\r\n"
+	            		+ "INNER JOIN tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario\r\n"
+	            		+ "INNER JOIN clientes C ON C.IdUsuario = U.IdUsuario\r\n"
+	            		+ "WHERE U.Estado  = 1;";
+	            PreparedStatement pst = cn.prepareStatement(query);		       
+				ResultSet rs = pst.executeQuery();
 				
-				Usuario us = new Usuario();
-				us.setIdUsuario(rs.getInt("IdUsuario"));
-			    TipoUsuario tipo = new TipoUsuario();
-			    tipo.setIdTipoUsuario(rs.getString("IdTipoUsuario").charAt(0));
-			    tipo.setDescripcion(rs.getString("Descripcion")); 			   
-			    us.setTipoUsuario(tipo);
-			    us.setClienteAsociado(rs.getInt("CodCliente"));
-			    us.setNombreUsuario(rs.getString("NombreUsuario"));
-			    us.setContrasena(rs.getString("Contrasena"));
-			    us.setEstado(rs.getBoolean("Estado"));				
-				lista.add(us);			}
+				
+				while(rs.next()){
+					
+					Usuario us = new Usuario();
+					us.setIdUsuario(rs.getInt("IdUsuario"));
+				    TipoUsuario tipo = new TipoUsuario();
+				    tipo.setIdTipoUsuario(rs.getString("IdTipoUsuario").charAt(0));
+				    tipo.setDescripcion(rs.getString("Descripcion")); 			   
+				    us.setTipoUsuario(tipo);
+				    us.setClienteAsociado(rs.getInt("CodCliente"));
+				    us.setNombreUsuario(rs.getString("NombreUsuario"));
+				    us.setContrasena(rs.getString("Contrasena"));
+				    us.setEstado(rs.getBoolean("Estado"));				
+					lista.add(us);			}
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
 			
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-		
-			 try {
-		            if (cn != null)
-		                cn.close();
-		        } catch (Exception e2) {
-		            e2.printStackTrace();
-		        }
-		}		
-		return lista;
-	}
+				 try {
+			            if (cn != null)
+			                cn.close();
+			        } catch (Exception e2) {
+			            e2.printStackTrace();
+			        }
+			}		
+			return lista;
+		}
 
 	public Usuario obtenerPorNombre(String nombreUsuario) {
 		Usuario usuarioSolicitado = new Usuario();
@@ -159,13 +159,18 @@ public ArrayList<Usuario> Listar() {
 
 		return existe;
 	}
+	
 	public Usuario listarID(int num) {
 		Usuario us = new Usuario();
         Connection cn = null;
 
         try {
            cn = Conexion.getConexion().getSQLConexion();
-           String query = "select U.IdUsuario, U.IdTipoUsuario, T.Descripcion , C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado from usuarios U  inner join tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario inner join  clientes C on C.IdUsuario = U.IdUsuario WHERE U.IdUsuario = ?";
+           String query = "SELECT U.IdUsuario, U.IdTipoUsuario, T.Descripcion , C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado\r\n"
+           		+ "FROM usuarios U \r\n"
+           		+ "INNER JOIN tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario\r\n"
+           		+ "INNER JOIN  clientes C ON C.IdUsuario = U.IdUsuario\r\n"
+           		+ "WHERE U.IdUsuario = ? AND U.Estado = 1";
         		   PreparedStatement pst = cn.prepareStatement(query);
             pst.setInt(1, num);
             ResultSet rs = pst.executeQuery();
@@ -200,7 +205,11 @@ public ArrayList<Usuario> Listar() {
 
         try {
            cn = Conexion.getConexion().getSQLConexion();
-           String query = "select U.IdUsuario, U.IdTipoUsuario, T.Descripcion , C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado from usuarios U  inner join tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario inner join  clientes C on C.IdUsuario = U.IdUsuario WHERE C.CodCliente = ?";
+           String query = "SELECT U.IdUsuario, U.IdTipoUsuario, T.Descripcion , C.CodCliente, U.NombreUsuario, U.Contrasena, U.Estado\r\n"
+           		+ "FROM usuarios U\r\n"
+           		+ "INNER JOIN tipousuarios T ON U.IdTipoUsuario = T.IdTipoUsuario\r\n"
+           		+ "INNER JOIN  clientes C ON C.IdUsuario = U.IdUsuario\r\n"
+           		+ "WHERE C.CodCliente = ? AND U.Estado = 1";
         		   PreparedStatement pst = cn.prepareStatement(query);
             pst.setInt(1, num);
             ResultSet rs = pst.executeQuery();

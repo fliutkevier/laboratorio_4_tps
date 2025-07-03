@@ -3,18 +3,11 @@ package Dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import DaoInterfaz.IDaoCuotas;
-import Entidades.Cliente;
-import Entidades.CuentaBancaria;
 import Entidades.Cuotas;
-import Entidades.Prestamo;
-import Entidades.TipoCuenta;
-import Negocio.NegocioCliente;
-import Negocio.NegocioTipoCuenta;
-import NegocioInterfaz.INegocioCliente;
-import NegocioInterfaz.INegocioTipoCuenta;
 
 public class DaoCuotas implements IDaoCuotas {
 	
@@ -55,37 +48,57 @@ public class DaoCuotas implements IDaoCuotas {
 		return cuentas;
 		
 	}
-	public int creacionCuotas (int Codprestamo, int numeroCuota, int montoCuota)
-	{
-		Connection cn = null;
-		int filas=0;
+	
+	public int pagarCuota(int idprestamo, int idCuota) {
+	    Connection cn = null;
+	    PreparedStatement pst = null;
+	    int filasAfectadas = 0;
 
-        try {
-        	
-            cn = Conexion.getConexion().getSQLConexion();
-            String query = "INSERT INTO Cuotas (CodPrestamo, NumeroCuota, MontoCuota) values (?,?,?)";
-            PreparedStatement pst = cn.prepareStatement(query);
-                    
-            	pst.setInt(1, Codprestamo);
-            	pst.setInt(2, numeroCuota);
-            	pst.setInt(3, montoCuota);
-            	filas = pst.executeUpdate();
-    	        cn.commit();
-            	          
+	    try {
+	       
+	        cn = Conexion.getConexion().getSQLConexion();
+	        if (cn == null) {
+	            System.err.println("Error: No se pudo establecer conexión con la base de datos");
+	            return 0;
+	        }     	        
+	        String query = "UPDATE Cuotas SET EstadoPago = TRUE, FechaPago = NOW() WHERE CodPrestamo = ? AND NumeroCuota = ? AND EstadoPago = FALSE";
+	        
+	        pst = cn.prepareStatement(query);
+	        
+	       
+	        pst.setInt(1, idprestamo);
+	        pst.setInt(2, idCuota);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (cn != null)
-                    cn.close();
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
-        
-        return filas;
-		
+	      
+	        filasAfectadas = pst.executeUpdate();
+	        cn.commit();
+
+	    } catch (SQLException e) {
+	       
+	        try {
+	            if (cn != null) cn.rollback();
+	        } catch (SQLException ex) {
+	            System.err.println("Error al hacer rollback:");
+	            ex.printStackTrace();
+	        }
+	        System.err.println("Error al procesar pago de cuota:");
+	        e.printStackTrace();
+	    } finally {
+	        
+	        try {
+	            if (pst != null) pst.close();
+	        } catch (SQLException e) {
+	            System.err.println("Error al cerrar PreparedStatement:");
+	            e.printStackTrace();
+	        }
+	        try {
+	            if (cn != null) cn.close();
+	        } catch (SQLException e) {
+	            System.err.println("Error al cerrar Connection:");
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return filasAfectadas;
 	}
-
 }

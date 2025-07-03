@@ -29,7 +29,8 @@ public class servletsClientes extends HttpServlet {
        INegocioMovimientos movimiento = new NegocioMovimiento();
        INegocioPrestamo negPrestamo = new NegocioPrestamo();
        INegocioCuotas negCuotas = new NegocioCuotas();
-  
+       INegocioMovimientos negMovimientos = new NegocioMovimiento();
+
    
     public servletsClientes() {
         super();      
@@ -93,8 +94,9 @@ public class servletsClientes extends HttpServlet {
 		CuentaBancaria cuentaOrigen = negocioCuentaBancaria.obtenerCuentaPorCbu(cuentaSeleccionada.getCBU());
 		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
 		String cbuDestino = request.getParameter("txtCbuDestino");
+		String detalle = request.getParameter("txtDetalle");
 		
-		if(negocioCuentaBancaria.transferir(cbuDestino, cuentaOrigen, monto, "Hago Transferencia, crear text box xd"))
+		if(negocioCuentaBancaria.transferir(cbuDestino, cuentaOrigen, monto, detalle))
 		{
 			request.setAttribute("transferenciaRealizada", true);
 			cuentaOrigen = negocioCuentaBancaria.obtenerCuentaPorCbu(cuentaSeleccionada.getCBU());
@@ -165,24 +167,9 @@ public class servletsClientes extends HttpServlet {
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 	}
 	
+
 	
-	
-	private void sumarPrestamoAaCuenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{	
-	    HttpSession session = request.getSession();
-		double cantidadPedida = (double)session.getAttribute("totalPedido");			
-		CuentaBancaria cuenta = (CuentaBancaria) session.getAttribute("cuentaElegida");		
-		double nuevoSaldo = cantidadPedida + Double.parseDouble(String.valueOf(cuenta.getSaldo()));
-		BigDecimal BDnuevoSaldo = new BigDecimal(String.valueOf(nuevoSaldo));
-		
-		
-		cuenta.setSaldo(BDnuevoSaldo);
-		
-	}
-	
-	
-	
-	private void agregarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+private void agregarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	
 	{	
 		HttpSession session = request.getSession();
@@ -214,23 +201,15 @@ public class servletsClientes extends HttpServlet {
 		prestamo.setImportePagar(BDimporteAaPagar);
 		
 		int confirmar = negPrestamo.agregarNuevoPrestamo(prestamo);
-		crearCuotas(prestamo);
+		
 		request.setAttribute("prestamoAgregado", confirmar);
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 	}
-	private void crearCuotas(Prestamo prestamo)
-	{	
-		int Codprestamo = prestamo.getCodPrestamo();
-		int cuotas = prestamo.getCuotasTotales();
-		int montoCuota = prestamo.getPagoMensual().intValue();
-		for (int i = 0; i<cuotas ; i++)			
-			negCuotas.CrearCuotasdePrestamo (Codprestamo, (i+1), montoCuota);
-	}
+	
 	private void cargarPrestamosActuales(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		HttpSession session = request.getSession();
-		if (session.getAttribute("clienteSesion") != null) {
-			    cliente = (Cliente) session.getAttribute("clienteSesion");
+		if (request.getSession().getAttribute("clienteSesion") != null) {
+			    cliente = (Cliente) request.getSession().getAttribute("clienteSesion");
 		}
 		
 		int idCuentaActual = cuenta.getNroCuenta();
@@ -238,48 +217,91 @@ public class servletsClientes extends HttpServlet {
 		ArrayList<Prestamo> todosLosPrestamosVigentes = negPrestamo.obtenerPrestamosAceptados();
 		for(Prestamo prestamo : todosLosPrestamosVigentes)
 		{
-			if(prestamo.getCuentaAsociada().getNroCuenta()==idCuentaActual && prestamo.isDeuda())
+			if(prestamo.getCuentaAsociada().getNroCuenta()==idCuentaActual && prestamo.isDeuda() && prestamo.isEstado())
 				prestamosCuenta.add(prestamo);
 		}
-		session.setAttribute("prestamosActuales", prestamosCuenta);
+		request.getSession().setAttribute("prestamosActuales", prestamosCuenta);
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 		
 	}
 	
 	private void cargarCuotas(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		 String prestamoId = request.getParameter("seleccionPrestamo");
+		
 		    String cuentaId = request.getParameter("seleccionCuentaPago");
+		    int idCuenta = Integer.parseInt(cuentaId);
+	        request.getSession().setAttribute("idCuentaPago", idCuenta);
+		    int prestamoID = Integer.parseInt(request.getParameter("seleccionPrestamo"));
+		    
 
-		    if (prestamoId != null && cuentaId != null) {
+		    if (prestamoID != 0 && cuentaId != null) {
 	            int cuentaPago = Integer.parseInt(cuentaId);
-	            int prestamoAaPagar = Integer.parseInt(prestamoId);
+	            request.getSession().setAttribute("IdprestamoSeleccionado", prestamoID);
+	            
 	            CuentaBancaria cuentaAaCobrar = negcuentaBancaria.ObtenerporID(cuentaPago);		            
 	            double saldoAntesdeDescontar = cuentaAaCobrar.getSaldo().doubleValue();
-			HttpSession session = request.getSession();
-			session.setAttribute("IdprestamoSeleccionado", prestamoId);
-	        session.setAttribute("cuentaPagoCuota", cuentaAaCobrar);
+			
+			request.getSession().setAttribute("IdprestamoSeleccionado", prestamoID);
+			request.getSession().setAttribute("cuentaPagoCuota", cuentaAaCobrar);
 						
 			ArrayList <Cuotas> cuotas = new ArrayList<Cuotas>();
-			cuotas = negCuotas.listarCuotasPorIdPrestamo(prestamoAaPagar);	
+			cuotas = negCuotas.listarCuotasPorIdPrestamo(prestamoID);	
+			if(saldoAntesdeDescontar < cuotas.get(0).getMontoCuota())
+			{
+				request.setAttribute("mensajeEror", "El saldo es menor al monto a abonar");
+			}
 			
-			session.setAttribute("saldoAntesdeDescontar", saldoAntesdeDescontar);
-			session.setAttribute("listadoCuotas", cuotas);
+			request.getSession().setAttribute("saldoAntesdeDescontar", saldoAntesdeDescontar);
+			request.getSession().setAttribute("listadoCuotas", cuotas);
 			
 		}
 		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 		
 	}
-	///TERMINAR
 	
-		private void pagarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-		{
-			//generar movimiento - solo pagar estado = 0 - marcar cuota como 1 - restar saldo en cuenta
-			int cuotaElegida = Integer.parseInt(request.getParameter("seleccionCuota"));
-			
-			HttpSession session = request.getSession();
-			CuentaBancaria cuenta = (CuentaBancaria)session.getAttribute("cuentaPagoCuota");
-			//negcuentaBancaria.actualizarSaldo()
+	private void pagarPrestamo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+		{	//marcar cuota paga
+		int resultado =0;
+		//generar movimiento - solo pagar estado = 0 - marcar cuota como 1 - restar saldo en cuenta
+		int cuotaElegida = Integer.parseInt(request.getParameter("seleccionCuota"));
+		 int prestamoID = (int) request.getSession().getAttribute("IdprestamoSeleccionado");
+	    resultado = negCuotas.pagarCuotaSeleccionada(prestamoID, cuotaElegida);
+	    
+	    
+	    //actualizar saldo
+	   
+	    double saldoFinal = Double.parseDouble(request.getParameter("saldoActualizado"));
+	    BigDecimal saldoFinalBD = BigDecimal.valueOf(saldoFinal);
+	    Integer idCuentaiNT = (Integer) request.getSession().getAttribute("idCuentaPago");
+	    int idCuenta = idCuentaiNT;
+	    String mensaje="";
+	    if(negcuentaBancaria.descontarCuota(saldoFinalBD, idCuenta))
+	    {
+	    	if(resultado == 1)
+	    		mensaje= "Pago de cuota exitoso!";
+            	request.getSession().setAttribute("mensajeExito", mensaje);
+            	request.setAttribute("mensajeExito", mensaje);
+	        	CuentaBancaria cuenta = (CuentaBancaria)request.getSession().getAttribute("cuentaPagoCuota");
+	        	cuenta.setSaldo(saldoFinalBD);
+	        	String tipo= "PP";
+	        	String texto = "Pago de cuota";
+	        	
+	        	ArrayList <Cuotas> cuotas = (ArrayList <Cuotas>)request.getSession().getAttribute("listadoCuotas");
+	        	BigDecimal mov = BigDecimal.valueOf(cuotas.get(0).getMontoCuota());
+	        	negMovimientos.crearMovimiento(tipo, idCuenta, texto, mov);
+	        	
+	        	INegocioCuotas negocioCuotas = new NegocioCuotas();
+	        	if(negocioCuotas.cuotasSaldadas(prestamoID))
+	        	{
+	        		INegocioPrestamo negocioPrestamo = new NegocioPrestamo();
+	        		negocioPrestamo.saldarPrestamo(prestamoID);
+	        		request.getSession().setAttribute("prestamosActuales", negocioPrestamo.obtenerPrestamosAceptadosPorNroCuenta(idCuentaiNT));
+	        	}
+	        	
+	        	request.getSession().setAttribute("listadoCuotas", negocioCuotas.listarCuotasPorIdPrestamo(prestamoID));
+	    } 
+	    
+		request.getRequestDispatcher("/ClientePrestamos.jsp").forward(request, response);
 		}
 }
 
