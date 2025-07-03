@@ -1,5 +1,6 @@
 package DaoInterfaz;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import Entidades.CuentaBancaria;
@@ -13,4 +14,6 @@ public interface IDaoCuentaBancaria {
 	public ArrayList<String> obtenerCbuExistentes();
 	public boolean darAltaCuenta(int numeroCuenta);
 	public CuentaBancaria ObtenerCuentaporID(int id);
+	public CuentaBancaria obtenerCuentaPorCbu(String cbu);
+	public boolean modificarSaldoEnCuenta(BigDecimal monto, int numeroCuenta);
 }

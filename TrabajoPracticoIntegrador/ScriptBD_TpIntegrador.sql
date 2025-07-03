@@ -449,9 +449,12 @@ CREATE PROCEDURE aceptarPrestamo (
 BEGIN
     DECLARE v_importe DECIMAL(12,2);
     DECLARE v_nroCuenta INT;
+    DECLARE v_pagoMensual DECIMAL(12,2);
+    DECLARE v_cuotasTotales INT;
+    DECLARE v_numeroCuota INT DEFAULT 1;
 
-    SELECT ImportePedido, NroCuentaAsociado
-    INTO v_importe, v_nroCuenta
+    SELECT ImportePedido, NroCuentaAsociado, PagoMensual, CuotasTotales
+    INTO v_importe, v_nroCuenta, v_pagoMensual, v_cuotasTotales
     FROM prestamos
     WHERE CodPrestamo = p_codPrestamo;
 
@@ -463,8 +466,15 @@ BEGIN
     SET Saldo = Saldo + v_importe
     WHERE NroCuenta = v_nroCuenta;
 
-    INSERT INTO movimientos (CodTipoMovimiento, NroCuentaAsociado,  Detalle, Importe)
+    INSERT INTO movimientos (CodTipoMovimiento, NroCuentaAsociado, Detalle, Importe)
     VALUES ('AP', v_nroCuenta, 'Acreditación préstamo', v_importe);
+
+    WHILE v_numeroCuota <= v_cuotasTotales DO
+        INSERT INTO cuotas (CodPrestamo, NumeroCuota, MontoCuota)
+        VALUES (p_codPrestamo, v_numeroCuota, v_pagoMensual);
+
+        SET v_numeroCuota = v_numeroCuota + 1;
+    END WHILE;
 
 END $$
 

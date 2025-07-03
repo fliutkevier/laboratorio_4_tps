@@ -1,5 +1,6 @@
 package Dao;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -384,5 +385,82 @@ public class DaoCuentaBancaria implements IDaoCuentaBancaria{
 		return cuentaBancaria;
 	}
 		
+	public CuentaBancaria obtenerCuentaPorCbu(String cbu)
+	{
+		CuentaBancaria cuentaBancaria = new CuentaBancaria();
+		Connection cn = null;
+		
+		try {
+			
+			cn = Conexion.getConexion().getSQLConexion();
+			String query = "SELECT NroCuenta, CodTipoCuenta, CodCliente, CBU, Saldo, Fecha_alta, Estado FROM cuentas WHERE CBU = ?";
+			
+			PreparedStatement pst = cn.prepareStatement(query);
+			pst.setString(1, cbu);
+			ResultSet rs = pst.executeQuery();
+			
+			if(rs.next()) {
+				
+				INegocioTipoCuenta negocioTipoCuenta = new NegocioTipoCuenta();
+				INegocioCliente clienteNegocio = new NegocioCliente();
+				
+				cuentaBancaria = new CuentaBancaria();
+				cuentaBancaria.setNroCuenta(rs.getInt("NroCuenta"));
+				cuentaBancaria.setCBU(rs.getString("CBU"));
+				cuentaBancaria.setSaldo(rs.getBigDecimal("Saldo"));
+				cuentaBancaria.setFecha_alta(rs.getDate("Fecha_alta"));
+				cuentaBancaria.setEstado(rs.getBoolean("Estado"));
+				
+				TipoCuenta tipoCuenta = new TipoCuenta();
+				tipoCuenta = negocioTipoCuenta.obtenerPorCod(rs.getString("CodTipoCuenta").charAt(0));
+				cuentaBancaria.setTipoCuenta(tipoCuenta);
+				
+				Cliente cliente = new Cliente();
+				cliente = clienteNegocio.buscarClientePorCodigo(rs.getString("CodCliente"));
+				cuentaBancaria.setCliente(cliente);			
+				
+			}
+		} catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (cn != null)
+                    cn.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+		
+		return cuentaBancaria;
 	}
+	
+	public boolean modificarSaldoEnCuenta(BigDecimal monto, int numeroCuenta)
+	{
+		//UPDATE cuentas SET Saldo = ? WHERE NroCuenta = ?
+		Connection cn = null;
+        int filasAfectadas = 0;
+
+        try {
+        	
+            cn = Conexion.getConexion().getSQLConexion();
+            cn.setAutoCommit(true);
+            String query = "UPDATE cuentas SET Saldo = ? WHERE NroCuenta = ?";
+            PreparedStatement pst = cn.prepareStatement(query);
+            pst.setBigDecimal(1, monto);
+            pst.setInt(2, numeroCuenta);
+            filasAfectadas = pst.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (cn != null)
+                    cn.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return filasAfectadas > 0;	
+	}
+}
 

@@ -15,7 +15,6 @@ import NegocioInterfaz.INegocioCuentaBancaria;
 import NegocioInterfaz.INegocioCuotas;
 import Entidades.*;
 import NegocioInterfaz.INegocioMovimientos;
-import Negocio.NegocioMovimiento;
 import NegocioInterfaz.INegocioPrestamo;
 
 /**
@@ -81,7 +80,29 @@ public class servletsClientes extends HttpServlet {
     	    }
     	}
         
-        
+        if(request.getParameter("btnTransferir") != null)
+        {
+        	realizarTransferencia(request, response);
+        }
+	}
+	
+	private void realizarTransferencia(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		CuentaBancaria cuentaOrigen = (CuentaBancaria)request.getSession().getAttribute("cuentaElegida");
+		BigDecimal monto = new BigDecimal(request.getParameter("txtMonto"));
+		String cbuDestino = request.getParameter("txtCbuDestino");
+		
+		INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
+		if(negocioCuentaBancaria.transferir(cbuDestino, cuentaOrigen, monto, "Hago Transferencia, crear text box xd"))
+		{
+			request.setAttribute("transferenciaRealizada", true);
+		}
+		else 
+		{
+			request.setAttribute("transferenciaRealizada", false);
+		}
+		
+		request.getRequestDispatcher("/ClienteTransferencias.jsp").forward(request, response);
 	}
 	
 	private void cargarSeleccionCuenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

@@ -1,3 +1,4 @@
+<%@page import="Entidades.CuentaBancaria"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -15,24 +16,54 @@
 	
 	<main class="container mt-5">
 		<h1 class="mb-4">Transferencias</h1>
-		<form>
+		<form action="servletsClientes" method="post">
 			<div class="mb-3">
-       			<label for="SeleccionarCuenta" class="form-label">Seleccione cuenta de origen</label>
-       			<select id="SeleccionarCuenta" name="idCuenta" class="form-select">
-          			<option value="1">Caja de ahorro - Nº 123456789 (CBU: 0123456789012345678901)</option>
-          			<option value="2">Cuenta corriente - Nº 987654321 (CBU: 1098765432109876543210)</option>
-          			<option value="3">Caja de ahorro - Nº 555555555 (CBU: 5555555555555555555555)</option>
-        		</select>
+				<h5>Cuenta de Origen:</h5>
+				<div class="card">
+					<div class="card-body">
+					<% CuentaBancaria cuentaBancaria = (CuentaBancaria)request.getSession().getAttribute("cuentaElegida");
+					String cbu = cuentaBancaria.getCBU();
+					String tipoDeCuenta = cuentaBancaria.getTipoCuenta().getDescripcion();
+					request.setAttribute("tipoCuenta", tipoDeCuenta);
+					request.setAttribute("cbu", cbu);
+					%>
+						${tipoCuenta} | CBU: ${cbu}
+					</div>
+				</div>
+       			
       		</div>
       		<div class="mb-3">
 				<label id="cbuDestino" class="form-label">CBU destino</label>
-				<input type="text" class="form-control" id="cbuDestino" name="cbuDestino" maxlength="22" placeholder="Ingrese el CBU de la cuenta destino">
+				<input required type="number" min="0" step="1" class="form-control" id="cbuDestino" name="txtCbuDestino" maxlength="22" placeholder="Ingrese el CBU de la cuenta destino">
 			</div>
 			<div class="mb-3">
 				<label id="Monto" class="form-label">Monto a transferir</label>
-				<input type="text" class="form-control" id="Monto" maxlength="22" placeholder="Ingrese el monto a transferir">
+				<input required type="number" step="0.01" min="0" class="form-control" id="Monto" name="txtMonto" maxlength="22" placeholder="Ingrese el monto a transferir">
 			</div>
-      		<button type="submit" class="btn btn-primary mt-2" >Confirmar transferencia</button>
+      		<button type="submit" class="btn btn-primary mt-2" name="btnTransferir">Confirmar transferencia</button>
+      		<%
+      		if(request.getAttribute("transferenciaRealizada") != null)
+      		{
+      			boolean transferenciaRealizada = (boolean)request.getAttribute("transferenciaRealizada");
+      			if(transferenciaRealizada)
+          		{%>
+          			<div class="card text-bg-success mb-3" style="max-width: 18rem;">
+    				  <div class="card-body">
+    				    <h5 class="card-title">Se realizó la transferencia.</h5>
+    				  </div>
+    				</div>
+          			
+          		<%} else {%>
+          			<div class="card text-bg-danger mb-3" style="max-width: 18rem;">
+    				  <div class="card-body">
+    				    <h5 class="card-title">No se pudo realizar la transferencia.</h5>
+    				  </div>
+    				</div>
+          			
+          		<%} %>
+      		<%} %>
+      		
+      		
 		</form>
 	</main>
 

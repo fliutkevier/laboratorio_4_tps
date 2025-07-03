@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,6 +33,8 @@ import Entidades.Prestamo;
 import Entidades.Provincia;
 import Entidades.TipoCuenta;
 import Entidades.Usuario;
+import Excepciones.noExisteClienteException;
+import Excepciones.clienteBajaException;
 
 @WebServlet("/servletAdminClientes")
 public class servletAdminClientes extends HttpServlet {
@@ -51,6 +52,9 @@ public class servletAdminClientes extends HttpServlet {
     ArrayList<Usuario> usuarios;
     Usuario usuarioA;
     INegocioPrestamo negPrestamo = new NegocioPrestamo();
+    noExisteClienteException exc1 = new noExisteClienteException();
+    clienteBajaException exc2 = new clienteBajaException();
+
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -278,20 +282,20 @@ public class servletAdminClientes extends HttpServlet {
 	
 	private void consultarCuentasCliente(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		 String codigoCliente = request.getParameter("txtCodigoCliente");
+			String codigoCliente = request.getParameter("txtCodigoCliente");
 		    INegocioCliente negocioCliente = new NegocioCliente();
 		    
-		    Cliente cliente = negocioCliente.buscarClientePorCodigo(codigoCliente);
-		    
-		    if (cliente == null) {
+		    try {
+		        Cliente cliente = negocioCliente.buscarClientePorCodigo(codigoCliente);
+
+		        if (cliente == null) {
+		        	throw new noExisteClienteException();
+		        }
+
+		        if (!cliente.isEstado()) {
+		        	throw new clienteBajaException();
+		        }
 		        
-		        request.setAttribute("mensajeErrorCliente", "El cliente no existe.");
-		    }
-		    else if (!cliente.isEstado()) {
-		        
-		        request.setAttribute("mensajeErrorCliente", "El cliente está dado de baja.");
-		    }
-		    else {
 		        // Cliente existe y está activo
 		        INegocioCuentaBancaria negocioCuentaBancaria = new NegocioCuentaBancaria();
 		        ArrayList<CuentaBancaria> cuentasBancarias = negocioCuentaBancaria.buscarCuentasBancariasPorClienteAsignado(codigoCliente);
@@ -302,7 +306,10 @@ public class servletAdminClientes extends HttpServlet {
 		        request.setAttribute("cantCuentasBancarias", cantCuentasBancarias);
 		        boolean permitidoAsignar = cantCuentasBancarias < 3;
 		        request.setAttribute("permitidoAsignar", permitidoAsignar);
-		    }
+		    	
+		    	} catch (noExisteClienteException | clienteBajaException ex) {
+		            request.setAttribute("mensajeErrorCliente", ex.getMessage());
+		       }
 		request.getRequestDispatcher("/AdminAsignarCuentas.jsp").forward(request, response);
 	}
 	
@@ -383,15 +390,23 @@ public class servletAdminClientes extends HttpServlet {
 	
 	private void buscarCliente(HttpServletRequest request, HttpServletResponse response, String codigoCliente) throws ServletException, IOException
 	{
-		Cliente cliente = negocio.buscarClientePorCodigo(codigoCliente);
-		
-		if (cliente == null || cliente.isEstado()==false) {
-        request.setAttribute("mensajeNoEncontrado", "No se encontró el cliente con el código " + codigoCliente + ".");
-        request.getRequestDispatcher("/AdminEliminarCliente.jsp").forward(request, response);
-		} else {
-		request.setAttribute("cliente", cliente);
+		try {
+	        Cliente cliente = negocio.buscarClientePorCodigo(codigoCliente);
+
+	        if (cliente == null) {
+	            throw new noExisteClienteException();
+	        }
+
+	        if (!cliente.isEstado()) {
+	            throw new clienteBajaException();
+	        }
+
+	        request.setAttribute("cliente", cliente);
+
+	    } catch (noExisteClienteException | clienteBajaException ex) {
+	        request.setAttribute("mensajeNoEncontrado", ex.getMessage());
+	    }
 		request.getRequestDispatcher("/AdminEliminarCliente.jsp").forward(request, response);
-		}
 	}
 	
 	private void buscarCuentasFiltradas(HttpServletRequest request, HttpServletResponse response,

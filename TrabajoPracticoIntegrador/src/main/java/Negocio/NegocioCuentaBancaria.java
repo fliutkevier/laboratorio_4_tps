@@ -1,7 +1,9 @@
 package Negocio;
 
 import NegocioInterfaz.INegocioCuentaBancaria;
+import NegocioInterfaz.INegocioMovimientos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -79,6 +81,57 @@ public class NegocioCuentaBancaria implements INegocioCuentaBancaria{
 	public CuentaBancaria ObtenerporID(int id)
 	{
 		return cuentaDao.ObtenerCuentaporID(id);
+	}
+
+	public CuentaBancaria obtenerCuentaPorCbu(String cbu) {
+		return cuentaDao.obtenerCuentaPorCbu(cbu);
+	}
+	
+	public boolean transferir(String cbuDestino, CuentaBancaria cuentaOrigen, BigDecimal montoTransferido, String detalle)
+	{
+		CuentaBancaria cuentaDestino = obtenerCuentaPorCbu(cbuDestino);
+		
+		if(montoTransferido.compareTo(BigDecimal.ONE) < 0)
+		{
+			return false;
+		}
+		
+		if(cuentaOrigen.getSaldo().compareTo(montoTransferido) < 0)
+		{
+			return false;
+		}
+		
+		if(cuentaOrigen.getNroCuenta() == cuentaDestino.getNroCuenta())
+		{
+			return false;
+		}
+		
+		BigDecimal nuevoSaldoOrigen = cuentaOrigen.getSaldo().subtract(montoTransferido);
+		if(!cuentaDao.modificarSaldoEnCuenta(nuevoSaldoOrigen, cuentaOrigen.getNroCuenta()))
+		{
+			return false;
+		}
+		
+		BigDecimal nuevoSaldoDestino = cuentaDestino.getSaldo().add(montoTransferido);
+		if(!cuentaDao.modificarSaldoEnCuenta(nuevoSaldoDestino, cuentaDestino.getNroCuenta()))
+		{
+			return false;
+		}
+		
+		INegocioMovimientos negocioMovimientos = new NegocioMovimiento();
+		//movimiento de la cuenta de origen que se pasa en negativo.
+		if(!negocioMovimientos.crearMovimiento("TT", cuentaOrigen.getNroCuenta(), detalle, montoTransferido.negate()))
+		{
+			return false;
+		}
+		
+		//movimiento de la cuenta destinataria.
+		if(!negocioMovimientos.crearMovimiento("TT", cuentaDestino.getNroCuenta(), detalle, montoTransferido))
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 }

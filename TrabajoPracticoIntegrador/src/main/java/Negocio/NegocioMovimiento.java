@@ -1,5 +1,7 @@
 package Negocio;
 import Entidades.Movimiento;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import Dao.DaoMovimientos;
@@ -18,5 +20,9 @@ public class NegocioMovimiento implements INegocioMovimientos {
 			
 			 return daoMovimientos.obtenerMovimientosPorTipo(nroCuenta, tipomovimiento);
 		}
-
+	    
+	    public boolean crearMovimiento(String tipoMovimiento, int numeroCuenta, String detalle, BigDecimal importe)
+	    {
+	    	return daoMovimientos.crearMovimiento(tipoMovimiento, numeroCuenta, detalle, importe);
+	    }
 }

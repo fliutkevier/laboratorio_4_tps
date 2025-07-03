@@ -1,5 +1,6 @@
 package Dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -113,5 +114,36 @@ public class DaoMovimientos implements IDaoMovimientos{
 	    return movimientos;
 	
 	}
-	
+	public boolean crearMovimiento(String tipoMovimiento, int numeroCuenta, String detalle, BigDecimal importe)
+	{
+		Connection cn = null;
+		int filas = 0;
+
+        try {
+        	
+            cn = Conexion.getConexion().getSQLConexion();
+            String query = "INSERT INTO movimientos (CodTipoMovimiento, NroCuentaAsociado, Detalle, Importe) VALUES (?, ?, ?, ?)";
+            PreparedStatement pst = cn.prepareStatement(query);
+                    
+            	pst.setString(1, tipoMovimiento);
+            	pst.setInt(2, numeroCuenta);
+            	pst.setString(3, detalle);
+            	pst.setBigDecimal(4, importe);
+            	filas = pst.executeUpdate();
+    	        cn.commit();
+            	          
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (cn != null)
+                    cn.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        
+        return filas>0;
+	}
 }
