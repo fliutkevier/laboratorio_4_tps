@@ -1,4 +1,4 @@
-# (WIP) laboratorio_4_tps
+#laboratorio_4_tps
 
 Acá estaremos subiendo los trabajos prácticos de la materia Laboratorio de Computación 4.
 
@@ -11,7 +11,7 @@ Trabajo Práctico 4 - Finalizado.<br/>
 Trabajo Práctico 5 - Finalizado.<br/>
 Trabajo Práctico 6 - Finalizado.<br/>
 Trabajo Práctico 7 - Finalizado.<br/>
-Trabajo Práctico Integrador - en proceso...
+Trabajo Práctico Integrador - Finalizado, calificado con la nota 10(diez).
 
 # Trabajo Práctico Integrador
 Aplicación web realizada utilizando **Java, JSP, Servlets y MySQL**.
