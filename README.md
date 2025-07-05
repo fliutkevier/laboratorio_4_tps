@@ -1,17 +1,19 @@
-#laboratorio_4_tps
+# Trabajos Prácticos de Laboratorio 4
+### Trabajo Integrador aprobado con 10.
 
 Acá estaremos subiendo los trabajos prácticos de la materia Laboratorio de Computación 4.
 
 Para finalizar con el trabajo integrador a final de cuatrimestre.
 
-Trabajo Práctico 1 - Finalizado.<br/>
-Trabajo Práctico 2 - Finalizado.<br/>
-Trabajo Práctico 3 - Finalizado.<br/>
-Trabajo Práctico 4 - Finalizado.<br/>
-Trabajo Práctico 5 - Finalizado.<br/>
-Trabajo Práctico 6 - Finalizado.<br/>
-Trabajo Práctico 7 - Finalizado.<br/>
-Trabajo Práctico Integrador - Finalizado, calificado con la nota 10(diez).
+Trabajo Práctico 1 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 2 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 3 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 4 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 5 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 6 - <strong>Finalizado.</strong><br/>
+Trabajo Práctico 7 - <strong>Finalizado.</strong><br/>
+</br>
+<strong>Trabajo Práctico Integrador - Finalizado, calificado con la nota 10(diez).</strong>
 
 # Trabajo Práctico Integrador
 Aplicación web realizada utilizando **Java, JSP, Servlets y MySQL**.
